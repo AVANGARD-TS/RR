@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Резервуар — гайд по событию · Tiles Survive</title>
+<meta name="description" content="Гайд по событию Резервуар в Tiles Survive: интерактивная карта боя, роли групп, распределение игроков, схема телепортации и правила.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf6f3;
+  --cream:#f5ece5;
+  --card:#ffffff;
+  --ink:#3c3835;
+  --muted:#8a7a6d;
+  --faint:#b7a793;
+  --line:#eaddd0;
+  --sand:#dec9b8;
+  --terra:#bc773f;
+  --g1:#e05c2a;
+  --g2:#4a90c2;
+  --g3:#3aa17e;
+  --danger:#d94f30;
+  --shadow:0 2px 6px rgba(96,72,48,.08),0 12px 32px rgba(96,72,48,.10);
+  --r:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Rubik',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  font-size:15px;
+  line-height:1.55;
+  background-image:radial-gradient(rgba(188,119,63,.06) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+::selection{background:rgba(224,92,42,.25)}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+
+/* ---------- TOP BAR ---------- */
+.topbar{
+  position:sticky;top:0;z-index:80;
+  background:rgba(250,246,243,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.tb-row{display:flex;align-items:center;gap:10px;padding:10px 16px;max-width:1100px;margin:0 auto}
+.logo{
+  width:36px;height:36px;border-radius:12px;flex:none;
+  background:linear-gradient(135deg,#4a90c2,#3aa17e);
+  display:grid;place-items:center;box-shadow:0 3px 8px rgba(74,144,194,.35);
+}
+.logo svg{width:20px;height:20px}
+.tb-title{font-weight:800;font-size:15px;letter-spacing:.01em;line-height:1.15}
+.tb-title small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+.tb-badge{margin-left:auto;flex:none;font-size:11px;font-weight:700;color:var(--terra);
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;box-shadow:var(--shadow)}
+nav.chips{
+  display:flex;gap:8px;overflow-x:auto;padding:10px 16px;max-width:1100px;margin:0 auto;
+  scrollbar-width:none;
+}
+nav.chips::-webkit-scrollbar{display:none}
+nav.chips a{
+  flex:none;text-decoration:none;font-size:12.5px;font-weight:600;color:var(--muted);
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;
+  transition:all .15s ease;
+}
+nav.chips a:active,nav.chips a:hover{color:#fff;background:var(--terra);border-color:var(--terra)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-bg{position:absolute;inset:0;background:url('assets/map-bg.jpg') center/cover;opacity:.5}
+.hero-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(250,246,243,.55),rgba(250,246,243,.96) 75%,var(--bg))}
+.hero-in{position:relative;padding:44px 0 30px}
+.kick{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--terra);
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;box-shadow:var(--shadow);
+}
+.kick i{width:8px;height:8px;border-radius:50%;background:var(--g3);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero h1{
+  font-size:clamp(40px,10vw,76px);font-weight:900;line-height:1;letter-spacing:-.01em;
+  text-transform:uppercase;margin:16px 0 10px;
+}
+.hero h1 span{color:var(--g2)}
+.hero p{max-width:620px;color:var(--muted);font-size:15px}
+.hero p b{color:var(--ink)}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.hchip{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:700;border-radius:999px;padding:8px 14px;
+  background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);
+}
+.hchip i{width:10px;height:10px;border-radius:4px;flex:none}
+.hchip.g1 i{background:var(--g1)}
+.hchip.g2 i{background:var(--g2)}
+.hchip.g3 i{background:var(--g3)}
+
+/* ---------- SECTIONS ---------- */
+section{padding:34px 0}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.sec-num{
+  width:34px;height:34px;border-radius:12px;flex:none;display:grid;place-items:center;
+  font-weight:800;font-size:14px;color:#fff;background:var(--terra);box-shadow:0 3px 8px rgba(188,119,63,.35);
+}
+.sec-head h2{font-size:clamp(20px,5.4vw,27px);font-weight:800;letter-spacing:-.01em}
+.sec-head .rule{flex:1;height:2px;border-radius:2px;background:var(--line);min-width:30px}
+.sec-tag{font-size:11.5px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.1em}
+
+/* ---------- MAP ---------- */
+.map-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.map-toolbar{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:12px 14px;border-bottom:1px solid var(--line);background:var(--cream);
+}
+.map-toolbar .t{font-weight:800;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.map-toolbar .t svg{width:16px;height:16px}
+.gfilters{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.gf{
+  font-size:12px;font-weight:700;border-radius:999px;padding:7px 13px;
+  background:#fff;border:1.5px solid var(--line);color:var(--muted);
+  display:inline-flex;align-items:center;gap:6px;transition:all .15s ease;
+}
+.gf i{width:9px;height:9px;border-radius:3px;background:var(--faint)}
+.gf[data-g="1"] i{background:var(--g1)}
+.gf[data-g="2"] i{background:var(--g2)}
+.gf[data-g="3"] i{background:var(--g3)}
+.gf.act{color:var(--ink);border-color:var(--ink);box-shadow:0 2px 6px rgba(60,56,53,.15)}
+.map-stage{position:relative;min-width:0}
+.map-view{
+  position:relative;overflow:hidden;touch-action:none;
+  background:#2a2019;height:340px;
+  user-select:none;-webkit-user-select:none;
+}
+.map-inner{
+  position:absolute;left:0;top:0;width:1200px;
+  transform-origin:0 0;will-change:transform;
+}
+.map-inner img{width:1200px;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.map-card.full{position:fixed;inset:0;z-index:200;border-radius:0;display:flex;flex-direction:column}
+.map-card.full .map-flex{flex:1;min-height:0;display:flex;flex-direction:column}
+.map-card.full .map-stage{flex:1;min-height:0;display:flex}
+.map-card.full .map-view{flex:1;height:auto!important;max-height:none}
+.map-card.full .map-panel{display:none}
+.map-card.full .map-note{display:none}
+.zoom{
+  position:absolute;right:12px;bottom:12px;z-index:30;display:flex;flex-direction:column;gap:6px;
+}
+.zoom button{
+  width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.95);color:var(--ink);
+  font-size:20px;font-weight:800;box-shadow:var(--shadow);border:1px solid var(--line);
+}
+.zoom button:active{transform:scale(.93)}
+.map-hint{
+  position:absolute;left:12px;bottom:12px;z-index:30;
+  font-size:11.5px;font-weight:600;color:#fff;background:rgba(42,32,25,.75);
+  border-radius:999px;padding:6px 12px;backdrop-filter:blur(4px);pointer-events:none;
+}
+.mk{
+  position:absolute;width:38px;height:38px;z-index:10;
+  border-radius:50%;background:#fff;border:3px solid var(--mk,#8a7a6d);
+  display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.45);
+  transform:translate(-50%,-50%) scale(var(--zi,1));
+  transition:opacity .2s ease;
+}
+.mk svg,.mk span{width:18px;height:18px;display:block}
+.mk span{font-size:14px;font-weight:900;line-height:1;color:var(--mk)}
+.mk::before{
+  content:"";position:absolute;inset:-9px;border-radius:50%;
+  border:2px solid var(--mk,#8a7a6d);opacity:.55;
+  animation:ring 2s ease-out infinite;
+}
+@keyframes ring{0%{transform:scale(.6);opacity:.7}80%{transform:scale(1.25);opacity:0}100%{opacity:0}}
+.mk.sel{background:#fff8ec;box-shadow:0 0 0 4px rgba(255,255,255,.85),0 4px 14px rgba(0,0,0,.5)}
+.mk.dim{opacity:.22;pointer-events:none}
+.mk.dim::before{display:none}
+.mk.dashed{border-style:dashed}
+.map-panel{display:none}
+.map-note{padding:12px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.map-note b{color:var(--terra)}
+
+/* info (панель и шторка) */
+.info-head{display:flex;align-items:flex-start;gap:10px}
+.info-head h3{font-size:17px;font-weight:800;line-height:1.25}
+.info-icon{
+  width:40px;height:40px;border-radius:14px;flex:none;display:grid;place-items:center;
+  background:#fff;border:2px solid var(--mk,var(--terra));box-shadow:var(--shadow);
+}
+.info-icon svg,.info-icon span{width:20px;height:20px}
+.info-icon span{font-weight:900;color:var(--mk,var(--terra))}
+.info-groups{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.ig{
+  font-size:11px;font-weight:800;border-radius:999px;padding:5px 11px;color:#fff;
+}
+.ig.g1{background:var(--g1)}.ig.g2{background:var(--g2)}.ig.g3{background:var(--g3)}
+.info-text{font-size:13.5px;color:var(--muted)}
+.info-text b{color:var(--ink)}
+
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:300;
+  background:var(--card);border-radius:22px 22px 0 0;
+  box-shadow:0 -8px 40px rgba(60,40,20,.25);
+  padding:10px 20px calc(18px + env(safe-area-inset-bottom));
+  transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.9,.35,1);
+  border-top:1px solid var(--line);
+}
+.sheet.open{transform:translateY(0)}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:2px auto 14px}
+.sheet .close{
+  position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:12px;
+  background:var(--cream);font-size:16px;font-weight:800;color:var(--muted);
+}
+.scrim{position:fixed;inset:0;z-index:290;background:rgba(42,32,25,.4);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.scrim.on{opacity:1;pointer-events:auto}
+
+/* ---------- GROUPS ---------- */
+details.gcard{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px;
+  border-top:5px solid var(--gc,var(--terra));
+}
+details.gcard summary{
+  list-style:none;display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;
+}
+details.gcard summary::-webkit-details-marker{display:none}
+.g-ico{
+  width:44px;height:44px;border-radius:14px;flex:none;display:grid;place-items:center;
+  background:var(--gcb,#f5ece5);color:var(--gc);
+}
+.g-ico svg{width:24px;height:24px}
+.gcard summary .tt{flex:1;min-width:0}
+.gcard summary .tt b{display:block;font-size:16px;font-weight:800}
+.gcard summary .tt small{font-size:12px;color:var(--muted);font-weight:600}
+.g-plus{
+  width:30px;height:30px;border-radius:10px;flex:none;display:grid;place-items:center;
+  background:var(--cream);color:var(--muted);font-weight:800;font-size:17px;transition:transform .25s ease;
+}
+details[open] .g-plus{transform:rotate(45deg)}
+.g-body{padding:0 16px 16px;border-top:1px dashed var(--line)}
+.g-body p{font-size:13.5px;color:var(--muted);margin-top:12px}
+.g-body p b{color:var(--ink)}
+.g-squads{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.sq{
+  font-size:12px;font-weight:700;border-radius:10px;padding:7px 12px;
+  background:var(--cream);color:var(--muted);border:1.5px solid transparent;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.sq.on{background:#fff;border-color:var(--gc);color:var(--gc)}
+.sq.on::before{content:"✓";font-weight:900}
+.sq.off::before{content:"·";font-weight:900}
+.g-warn{
+  margin-top:12px;font-size:12.5px;color:#9c5a1e;background:#fdf2e3;
+  border:1px solid #f3ddba;border-radius:12px;padding:10px 12px;display:flex;gap:8px;
+}
+.g-warn::before{content:"!";flex:none;width:18px;height:18px;border-radius:50%;background:var(--g1);color:#fff;
+  font-weight:900;font-size:12px;display:grid;place-items:center;margin-top:1px}
+
+/* ---------- SCENARIOS ---------- */
+.scen{display:grid;gap:12px}
+.scen-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow);padding:18px;position:relative;overflow:hidden;
+}
+.scen-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--sc,var(--g3))}
+.scen-card h4{font-size:16px;font-weight:800;margin:4px 0 8px;padding-left:6px}
+.scen-card p{font-size:13.5px;color:var(--muted);padding-left:6px}
+.scen-card p b{color:var(--ink)}
+.sc-if{
+  display:inline-block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--sc,var(--g3));background:#fff;border:1.5px solid currentColor;border-radius:999px;
+  padding:4px 11px;margin-left:6px;
+}
+.verdict{
+  margin:12px 0 0 6px;display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:800;color:var(--sc,var(--g3));
+}
+.verdict::before{content:"→";font-weight:900}
+
+/* ---------- TABLE ---------- */
+.tbl-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.tbl-search{
+  flex:1 1 100%;background:#fff;border:1.5px solid var(--line);border-radius:12px;
+  font-family:inherit;font-size:14px;color:var(--ink);padding:11px 16px;outline:none;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.tbl-search::placeholder{color:var(--faint)}
+.tbl-search:focus{border-color:var(--terra);box-shadow:0 0 0 3px rgba(188,119,63,.15)}
+.flt{
+  font-size:12px;font-weight:700;border-radius:999px;padding:8px 14px;
+  background:#fff;border:1.5px solid var(--line);color:var(--muted);transition:all .15s ease;
+}
+.flt.act[data-g="all"]{color:var(--ink);border-color:var(--ink)}
+.flt.act[data-g="1"]{color:#fff;background:var(--g1);border-color:var(--g1)}
+.flt.act[data-g="2"]{color:#fff;background:var(--g2);border-color:var(--g2)}
+.flt.act[data-g="3"]{color:#fff;background:var(--g3);border-color:var(--g3)}
+.tbl-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:560px}
+thead th{
+  font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);
+  text-align:left;padding:12px 14px;background:var(--cream);border-bottom:1px solid var(--line);white-space:nowrap;
+}
+thead th.num,tbody td.num{text-align:right}
+tbody td{padding:10px 14px;border-bottom:1px solid #f3ebe2;font-size:13.5px;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background .12s ease}
+tbody tr:hover{background:#fdf9f4}
+td.name{font-weight:700}
+td.num{font-weight:600;font-variant-numeric:tabular-nums}
+td .rank{font-size:10px;color:var(--faint);font-weight:600}
+.gtag{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:4px 9px;color:#fff;white-space:nowrap}
+tr.g1 .gtag{background:var(--g1)}
+tr.g2 .gtag{background:var(--g2)}
+tr.g3 .gtag{background:var(--g3)}
+tr.g1 td:first-child{box-shadow:inset 3px 0 0 var(--g1)}
+tr.g2 td:first-child{box-shadow:inset 3px 0 0 var(--g2)}
+tr.g3 td:first-child{box-shadow:inset 3px 0 0 var(--g3)}
+.tbl-foot{font-size:11.5px;color:var(--faint);margin-top:10px;font-weight:500}
+
+/* ---------- TELEPORT ---------- */
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tl-step{
+  background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px 10px;
+  text-align:center;transition:all .15s ease;position:relative;
+}
+.tl-step .t{font-size:10.5px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.tl-step .v{font-size:15px;font-weight:900;margin-top:6px}
+.tl-step.free .v{color:var(--g3)}
+.tl-step.cost .v{color:var(--g1)}
+.tl-step.act{border-color:var(--terra);box-shadow:0 0 0 3px rgba(188,119,63,.15);transform:translateY(-2px)}
+.tl-desc{
+  margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;
+  box-shadow:var(--shadow);padding:16px;font-size:14px;color:var(--muted);min-height:64px;
+}
+.tl-desc b{color:var(--ink)}
+
+/* ---------- CHECKLIST ---------- */
+.check{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.check label{
+  display:flex;gap:14px;align-items:flex-start;padding:15px 16px;cursor:pointer;
+  border-bottom:1px solid #f3ebe2;transition:background .12s ease;
+}
+.check label:last-of-type{border-bottom:none}
+.check label:active{background:#fdf9f4}
+.cbox{
+  flex:none;width:26px;height:26px;border-radius:9px;border:2px solid var(--sand);
+  display:grid;place-items:center;margin-top:1px;transition:all .15s ease;background:#fff;
+}
+.cbox svg{width:14px;height:14px;opacity:0;transform:scale(.4);transition:all .18s ease}
+.check input{display:none}
+.check input:checked + .cbox{background:var(--g3);border-color:var(--g3)}
+.check input:checked + .cbox svg{opacity:1;transform:scale(1)}
+.check .txt{font-size:14px;color:var(--muted)}
+.check .txt b{color:var(--ink)}
+.check input:checked ~ .txt{color:var(--ink)}
+.check-progress{padding:14px 16px;border-top:1px solid var(--line);background:var(--cream);
+  display:flex;align-items:center;gap:12px;font-size:12px;font-weight:800;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em}
+.cp-bar{flex:1;height:8px;border-radius:6px;background:#fff;border:1px solid var(--line);overflow:hidden}
+.cp-bar i{display:block;height:100%;width:0;background:var(--terra);border-radius:6px;transition:width .3s ease,background .3s ease}
+
+/* ---------- RULES ---------- */
+.rules{display:grid;gap:12px}
+.rule-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+.rule-card h5{
+  font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--g3);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.rule-card h5 i{width:10px;height:10px;border-radius:4px;background:var(--g3);flex:none}
+.rule-card.red h5{color:var(--danger)}
+.rule-card.red h5 i{background:var(--danger)}
+.rule-card ul{list-style:none}
+.rule-card li{
+  font-size:13.5px;color:var(--muted);padding:9px 0 9px 26px;position:relative;
+  border-bottom:1px dashed #f3ebe2;
+}
+.rule-card li:last-child{border-bottom:none}
+.rule-card li::before{
+  content:"✓";position:absolute;left:2px;top:9px;font-weight:900;color:var(--g3);font-size:13px;
+}
+.rule-card.red li::before{content:"✕";color:var(--danger)}
+.rule-card li b{color:var(--ink)}
+
+footer{border-top:1px solid var(--line);padding:26px 0 40px;margin-top:16px}
+.ft-in{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ft-in p{font-size:12px;font-weight:600;color:var(--faint)}
+
+/* ---------- ASSIGN / ROUTE ---------- */
+.as-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.btn{
+  font-size:12.5px;font-weight:800;border-radius:12px;padding:10px 16px;
+  background:var(--ink);color:#fff;box-shadow:var(--shadow);transition:transform .12s ease;
+}
+.btn:active{transform:scale(.96)}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.as-hint{font-size:12px;color:var(--faint);font-weight:600}
+.as-sub{font-size:14px;font-weight:800;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+.as-sub i{width:10px;height:10px;border-radius:4px}
+.as-sub.s1 i{background:var(--g1)}
+.as-sub.s2 i{background:var(--g2)}
+.as-grid{display:grid;gap:10px}
+.bld{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px}
+.bld.prio{border-top:4px solid var(--g2)}
+.bld-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.b-ico{width:34px;height:34px;border-radius:11px;background:#e8f1f9;display:grid;place-items:center;flex:none}
+.b-ico svg{width:18px;height:18px}
+.bld-head b{font-size:13.5px;font-weight:800;line-height:1.2}
+.bld-head .sum,.pair .sum{
+  margin-left:auto;font-size:11.5px;font-weight:800;color:#9c5a1e;
+  background:#fdf2e3;border:1px solid #f3ddba;border-radius:999px;padding:4px 10px;white-space:nowrap;flex:none;
+}
+.slots{display:flex;flex-wrap:wrap;gap:8px}
+.pl{
+  font-size:12.5px;font-weight:700;border-radius:11px;padding:8px 12px;
+  background:var(--cream);border:2px solid transparent;color:var(--ink);
+  display:inline-flex;align-items:center;gap:7px;transition:all .13s ease;
+}
+.pl small{font-weight:800;color:var(--faint)}
+.pl.sel{border-color:var(--g1);background:#fdeee6;transform:scale(1.05)}
+.pair-grid{display:grid;gap:10px}
+.pair{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;border-top:4px solid var(--g1)}
+.pair .ph2{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.stage-n{
+  width:32px;height:32px;border-radius:50%;background:var(--g1);color:#fff;font-weight:900;
+  display:grid;place-items:center;flex:none;font-size:14px;border:3px solid #fff;box-shadow:0 0 0 2px var(--g1);
+}
+.pair .ph2 b{font-size:13px;font-weight:800}
+.pair .who{font-size:12.5px;color:var(--muted)}
+.pair .who b{color:var(--ink)}
+.as-note{
+  margin-top:14px;font-size:12.5px;color:#9c5a1e;background:#fdf2e3;
+  border:1px solid #f3ddba;border-radius:12px;padding:11px 13px;
+}
+.as-note b{color:var(--ink)}
+.route-svg{position:absolute;left:0;top:0;opacity:0;transition:opacity .3s ease;pointer-events:none}
+.map-inner.route-on .route-svg{opacity:1}
+.st{
+  position:absolute;width:32px;height:32px;z-index:12;border-radius:50%;
+  background:var(--g1);color:#fff;font-weight:900;font-size:14px;
+  display:none;place-items:center;border:3px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.5);
+  transform:translate(-50%,-50%) scale(var(--zi,1));
+}
+.map-inner.route-on .st{display:grid}
+.st.sel{box-shadow:0 0 0 5px rgba(224,92,42,.35),0 4px 14px rgba(0,0,0,.5)}
+.rline{fill:none;stroke:#3c3835;stroke-width:7;opacity:.45;vector-effect:non-scaling-stroke}
+.rdash{fill:none;stroke:#fff;stroke-width:2.6;stroke-dasharray:10 9;vector-effect:non-scaling-stroke;animation:rflow 1.6s linear infinite}
+@keyframes rflow{to{stroke-dashoffset:-38}}
+
+/* ---------- DESKTOP ---------- */
+@media(min-width:900px){
+  .hero-in{padding:64px 0 40px}
+  .scen{grid-template-columns:1fr 1fr}
+  .rules{grid-template-columns:1fr 1fr}
+  .groups-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+  details.gcard{margin-bottom:0}
+  .map-flex{display:grid;grid-template-columns:1fr 320px;align-items:stretch}
+  .map-panel{display:block;border-left:1px solid var(--line);padding:18px;background:var(--cream);overflow-y:auto}
+  .map-panel .ph{font-size:13px;color:var(--faint);font-weight:600}
+  .sheet,.scrim{display:none}
+  .tbl-search{flex:1;min-width:220px}
+  .as-grid{grid-template-columns:1fr 1fr}
+  .pair-grid{grid-template-columns:repeat(2,1fr)}
+  .tl{gap:12px}
+  .tl-step{padding:18px 12px}
+}
+@media(max-width:640px){
+  section{padding:26px 0}
+  .tl-step .v{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb-row">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C12 3 5.5 10.5 5.5 15a6.5 6.5 0 0 0 13 0C18.5 10.5 12 3 12 3Z" fill="#fff"/><path d="M9 15.5a3 3 0 0 0 3 3" stroke="#4a90c2" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <div class="tb-title">Резервуар<small>Tiles Survive · гайд по событию</small></div>
+    <span class="tb-badge">3 группы · 30 игроков</span>
+  </div>
+  <nav class="chips">
+    <a href="#map">Карта боя</a>
+    <a href="#groups">Группы</a>
+    <a href="#center">Центр</a>
+    <a href="#roster">Распределение</a>
+    <a href="#assign">Точки</a>
+    <a href="#teleport">Телепорты</a>
+    <a href="#checklist">Перед боем</a>
+    <a href="#rules">Правила</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap hero-in">
+    <span class="kick"><i></i>Событие · новый план игры</span>
+    <h1>Резер<span>вуар</span></h1>
+    <p>Играем в <b>три группы</b>. Ударная группа сбивает таймеры захвата, вторая держит здания, третья качает бочки. Тапай по меткам на карте — там всё расписано по объектам.</p>
+    <div class="hero-meta">
+      <span class="hchip g1"><i></i>Группа 1 · ударная</span>
+      <span class="hchip g2"><i></i>Группа 2 · контроль</span>
+      <span class="hchip g3"><i></i>Группа 3 · бочки</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- MAP -->
+  <section id="map">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2>Карта боя</h2>
+      <span class="rule"></span>
+      <span class="sec-tag">Тапай по меткам</span>
+    </div>
+    <div class="map-card">
+      <div class="map-toolbar">
+        <span class="t">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg>
+          Объекты и задачи
+        </span>
+        <div class="gfilters" id="gfilters">
+          <button class="gf act" data-g="all"><i style="background:var(--terra)"></i>Все</button>
+          <button class="gf" data-g="1"><i></i>Гр. 1</button>
+          <button class="gf" data-g="2"><i></i>Гр. 2</button>
+          <button class="gf" data-g="3"><i></i>Гр. 3</button>
+        </div>
+        <button class="gf" id="routeToggle"><i style="background:var(--g1)"></i>Маршрут</button>
+      </div>
+      <div class="map-flex">
+        <div class="map-stage">
+          <div class="map-view" id="mapView">
+            <div class="map-inner" id="mapInner">
+              <img src="assets/map.jpg" alt="Карта боя события Резервуар" draggable="false">
+              <svg class="route-svg" id="routeSvg" viewBox="0 0 1200 675" width="1200" height="675" aria-hidden="true">
+                <path class="rline" d="M294 553 L234 162 L390 88 L864 115 L804 567 L294 553"/>
+                <path class="rdash" d="M294 553 L234 162 L390 88 L864 115 L804 567 L294 553"/>
+              </svg>
+              <!-- метки рендерятся скриптом -->
+            </div>
+          </div>
+          <div class="map-hint" id="mapHint">Щипок — зум · тяни — двигать</div>
+          <div class="zoom">
+            <button id="zoomFull" aria-label="Во весь экран" title="Во весь экран">⛶</button>
+            <button id="zoomFit" aria-label="Вся карта" title="Вся карта">⊡</button>
+            <button id="zoomIn" aria-label="Приблизить">+</button>
+            <button id="zoomOut" aria-label="Отдалить">−</button>
+          </div>
+        </div>
+        <aside class="map-panel" id="mapPanel">
+          <p class="ph">Выбери метку на карте — здесь появится описание объекта и задачи групп.</p>
+        </aside>
+      </div>
+      <p class="map-note"><b>Синяя зона</b> — наши, <b>красная</b> — противник. Сбитие таймеров идёт <b>по часовой стрелке</b> от текущих точек. Бочки появляются по ходу ивента — это работа группы 3.</p>
+    </div>
+  </section>
+
+  <!-- GROUPS -->
+  <section id="groups">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2>Группы и задачи</h2>
+      <span class="rule"></span>
+      <span class="sec-tag">Тап — свернуть</span>
+    </div>
+    <div class="groups-grid">
+
+      <details class="gcard" open style="--gc:var(--g1);--gcb:#fdeee6">
+        <summary>
+          <span class="g-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span>
+          <span class="tt"><b>Группа 1 · Ударная</b><small>4 основы + 4 помощника</small></span>
+          <span class="g-plus">+</span>
+        </summary>
+        <div class="g-body">
+          <p>Назначение — <b>сбивать таймер точек захвата весь ивент</b>, двигаясь <b>по часовой стрелке</b>. Летаем по карте, помогаем остальным и друг другу выбивать сильных противников.</p>
+          <p>Суммарная сила первых отрядов «основа + помощник» уравновешена: <b>самый слабый помощник идёт к самому сильному игроку</b> и т.д. Если основу жгут — помощник первым отрядом заходит к нему в гарнизон. Если помощь не нужна — помощник сбивает противников с бочек.</p>
+          <p><b>Захват точки — 2 минуты.</b> Когда до конца остаётся 60 сек и точка наша — сильный с помощником делают ТП и летят сбивать следующую.</p>
+          <div class="g-squads">
+            <span class="sq off">1 отряд</span>
+            <span class="sq on">2 отряд</span>
+            <span class="sq on">3 отряд</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="gcard" open style="--gc:var(--g2);--gcb:#e8f1f9">
+        <summary>
+          <span class="g-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <span class="tt"><b>Группа 2 · Защита</b><small>Контроль зданий</small></span>
+          <span class="g-plus">+</span>
+        </summary>
+        <div class="g-body">
+          <p>Обеспечиваем <b>контроль захваченных зданий</b>. Приоритет — <b>посадочная площадка</b> и <b>военный завод</b>: на каждом по <b>три сильных игрока</b>.</p>
+          <p>Распределяемся по 2–3 человека, в каждой связке — <b>один защищающий</b>: он следит за гарнизоном и обновляет его релоком, если в гарнизоне <b>меньше 50%</b> — отошёл в сторону, вода качается дальше, а в гарнизон идёт уже полный отряд. Остальные 1–2 человека сжигают противника или выигрывают время на переотправку.</p>
+          <div class="g-squads">
+            <span class="sq on">1 отряд</span>
+            <span class="sq on">2 отряд</span>
+          </div>
+          <p style="margin-top:10px">Если жгут: 1 и 2 дома, <b>3-й в гарнизон</b>. Если не жгут: в гарнизон 1 отряд, галочки на 2 и 3.</p>
+        </div>
+      </details>
+
+      <details class="gcard" open style="--gc:var(--g3);--gcb:#e7f4ef">
+        <summary>
+          <span class="g-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3C12 3 5.5 10.5 5.5 15a6.5 6.5 0 0 0 13 0C18.5 10.5 12 3 12 3Z"/></svg></span>
+          <span class="tt"><b>Группа 3 · Фарм</b><small>Качаем бочки</small></span>
+          <span class="g-plus">+</span>
+        </summary>
+        <div class="g-body">
+          <p>До появления бочек — <b>смотрим на карту и летим туда, где больше всего боёв</b>: сжигаем противников, садимся в гарнизоны, помогаем захватывать здания. Задача — набить <b>180 000 личных очков</b>: сидя на бочках, такой возможности не будет.</p>
+          <p>После появления бочек сидим <b>только на бочках</b>, отрядами 2–5.</p>
+          <div class="g-squads">
+            <span class="sq off">1 дома</span>
+            <span class="sq on">2–5 отряды</span>
+          </div>
+          <div class="g-warn">1-й отряд всегда дома и с галочками на воротах — иначе телепорт за ленту собьёт сбор сразу с нескольких точек. Если противник сильный: качаем 3–5 отрядами, 1 и 2 дома.</div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- CENTER -->
+  <section id="center">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2>Центральный резервуар</h2>
+      <span class="rule"></span>
+      <span class="sec-tag">Два сценария</span>
+    </div>
+    <div class="scen">
+      <div class="scen-card" style="--sc:var(--g3)">
+        <span class="sc-if">Если мы сильнее</span>
+        <h4>Сценарий 1</h4>
+        <p>Самый сильный игрок и его помощник <b>в состоянии самостоятельно удержать центральный резервуар</b> у противника.</p>
+        <span class="verdict">Центр держим</span>
+      </div>
+      <div class="scen-card" style="--sc:var(--g1)">
+        <span class="sc-if">Противник ровня или сильнее</span>
+        <h4>Сценарий 2</h4>
+        <p>Самый сильный игрок и его помощник летят <b>только сбивать время захвата</b>. Дальше перемещаются на необходимые объекты — и там так же сбивают время.</p>
+        <span class="verdict">Сбиваем время, не удерживаем</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROSTER -->
+  <section id="roster">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2>Распределение игроков</h2>
+      <span class="rule"></span>
+      <span class="sec-tag">Баланс по силам</span>
+    </div>
+    <div class="tbl-tools">
+      <input class="tbl-search" id="tblSearch" type="text" placeholder="Поиск по нику…" autocomplete="off">
+      <button class="flt act" data-g="all">Все</button>
+      <button class="flt" data-g="1">Группа 1</button>
+      <button class="flt" data-g="2">Средние</button>
+      <button class="flt" data-g="3">Бочки</button>
+    </div>
+    <div class="tbl-card">
+      <div class="tbl-scroll">
+        <table id="rosterTbl">
+          <thead>
+            <tr>
+              <th>Игрок</th>
+              <th>Группа</th>
+              <th class="num">Мощь</th>
+              <th class="num">I отряд</th>
+              <th class="num">II отряд</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="g1" data-g="1"><td class="name">Dragon Hunter</td><td><span class="gtag">Гр.1 · Основа</span></td><td class="num">112</td><td class="num">79 <span class="rank">ранка</span></td><td class="num">69 <span class="rank">ранка</span></td></tr>
+            <tr class="g1" data-g="1"><td class="name">Тебе водить</td><td><span class="gtag">Гр.1 · Основа</span></td><td class="num">108</td><td class="num">70 <span class="rank">ранка</span></td><td class="num">64 <span class="rank">ранка</span></td></tr>
+            <tr class="g1" data-g="1"><td class="name">Elena</td><td><span class="gtag">Гр.1 · Основа</span></td><td class="num">102</td><td class="num">62 <span class="rank">ранка</span></td><td class="num">62 <span class="rank">ранка</span></td></tr>
+            <tr class="g1" data-g="1"><td class="name">Повелитель</td><td><span class="gtag">Гр.1 · Основа</span></td><td class="num">100</td><td class="num">63 <span class="rank">ранка</span></td><td class="num">63 <span class="rank">ранка</span></td></tr>
+            <tr class="g1" data-g="1"><td class="name">Goldranez</td><td><span class="gtag">Гр.1 · Помощник</span></td><td class="num">95</td><td class="num">87</td><td class="num">80</td></tr>
+            <tr class="g1" data-g="1"><td class="name">ПринцессаДури</td><td><span class="gtag">Гр.1 · Помощник</span></td><td class="num">93</td><td class="num">60</td><td class="num">55</td></tr>
+            <tr class="g1" data-g="1"><td class="name">Chedrik</td><td><span class="gtag">Гр.1 · Помощник</span></td><td class="num">92</td><td class="num">65</td><td class="num">55</td></tr>
+            <tr class="g1" data-g="1"><td class="name">КАК ТО ТАК</td><td><span class="gtag">Гр.1 · Помощник</span></td><td class="num">90</td><td class="num">64</td><td class="num">53</td></tr>
+            <tr class="g2" data-g="2"><td class="name">luki_ink</td><td><span class="gtag">Средние</span></td><td class="num">89</td><td class="num">64</td><td class="num">54</td></tr>
+            <tr class="g2" data-g="2"><td class="name">tihiy.omut</td><td><span class="gtag">Средние</span></td><td class="num">87</td><td class="num">63</td><td class="num">53</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Vantera</td><td><span class="gtag">Средние</span></td><td class="num">85</td><td class="num">55</td><td class="num">52</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Athena.</td><td><span class="gtag">Средние</span></td><td class="num">83</td><td class="num">57</td><td class="num">56</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Орион</td><td><span class="gtag">Средние</span></td><td class="num">82</td><td class="num">57</td><td class="num">52</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Laksa</td><td><span class="gtag">Средние</span></td><td class="num">82</td><td class="num">47</td><td class="num">44</td></tr>
+            <tr class="g2" data-g="2"><td class="name">nEJIMEHb</td><td><span class="gtag">Средние</span></td><td class="num">82</td><td class="num">54</td><td class="num">48</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Alkash228</td><td><span class="gtag">Средние</span></td><td class="num">81</td><td class="num">47</td><td class="num">44</td></tr>
+            <tr class="g2" data-g="2"><td class="name">гусь.</td><td><span class="gtag">Средние</span></td><td class="num">80</td><td class="num">53</td><td class="num">46</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Pop tha Molly</td><td><span class="gtag">Средние</span></td><td class="num">80</td><td class="num">59</td><td class="num">51</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Вый</td><td><span class="gtag">Средние</span></td><td class="num">79</td><td class="num">56</td><td class="num">51</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Madmax</td><td><span class="gtag">Средние</span></td><td class="num">75</td><td class="num">53</td><td class="num">44</td></tr>
+            <tr class="g2" data-g="2"><td class="name">EG Modo</td><td><span class="gtag">Средние</span></td><td class="num">75</td><td class="num">54</td><td class="num">50</td></tr>
+            <tr class="g2" data-g="2"><td class="name">Koalaty</td><td><span class="gtag">Средние</span></td><td class="num">75</td><td class="num">55</td><td class="num">50</td></tr>
+            <tr class="g3" data-g="3"><td class="name">Tatiana</td><td><span class="gtag">Бочки</span></td><td class="num">67 <span class="rank">ранка</span></td><td class="num">47</td><td class="num">42</td></tr>
+            <tr class="g3" data-g="3"><td class="name">ANGELina</td><td><span class="gtag">Бочки</span></td><td class="num">72 <span class="rank">ранка</span></td><td class="num">54</td><td class="num">49</td></tr>
+            <tr class="g3" data-g="3"><td class="name">katushkapirozhno</td><td><span class="gtag">Бочки</span></td><td class="num">72 <span class="rank">ранка</span></td><td class="num">51</td><td class="num">49</td></tr>
+            <tr class="g3" data-g="3"><td class="name">Annkor</td><td><span class="gtag">Бочки</span></td><td class="num">73 <span class="rank">ранка</span></td><td class="num">46</td><td class="num">42</td></tr>
+            <tr class="g3" data-g="3"><td class="name">Pilesha</td><td><span class="gtag">Бочки</span></td><td class="num">73 <span class="rank">ранка</span></td><td class="num">46</td><td class="num">43</td></tr>
+            <tr class="g3" data-g="3"><td class="name">FaniaRock</td><td><span class="gtag">Бочки</span></td><td class="num">64 <span class="rank">ранка</span></td><td class="num">41</td><td class="num">38</td></tr>
+            <tr class="g3" data-g="3"><td class="name">OUNCE</td><td><span class="gtag">Бочки</span></td><td class="num">53 <span class="rank">ранка</span></td><td class="num">50</td><td class="num">49</td></tr>
+            <tr class="g3" data-g="3"><td class="name">Serega</td><td><span class="gtag">Бочки</span></td><td class="num">67 <span class="rank">ранка</span></td><td class="num">47</td><td class="num">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="tbl-foot">Группы составлены по силам для баланса · пометка «ранка» — из исходной таблицы распределения</p>
+  </section>
+
+  <!-- ASSIGN -->
+  <section id="assign">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2>Назначение по точкам</h2>
+      <span class="rule"></span>
+      <span class="sec-tag">Авто по силе · тапни двух — поменяются</span>
+    </div>
+
+    <h3 class="as-sub s2"><i></i>Группа 2 · кто где стоит</h3>
+    <div class="as-tools">
+      <button class="btn ghost" id="asReset">⟲ Раскидать по силе заново</button>
+      <span class="as-hint">Приоритеты — военка и вертолётка: туда идут самые сильные.</span>
+    </div>
+    <div class="as-grid" id="asGrid"></div>
+
+    <h3 class="as-sub s1"><i></i>Группа 1 · пары и этапы маршрута</h3>
+    <div class="as-tools">
+      <button class="btn" id="showRoute">Показать маршрут на карте</button>
+      <span class="as-hint">Пары собраны по правилу: самый слабый помощник — к самому сильному.</span>
+    </div>
+    <div class="pair-grid" id="pairGrid"></div>
+
+    <div class="as-note">
+      <b>Правило 60 секунд.</b> Захват точки идёт 2 минуты. Когда до конца остаётся <b>60 сек</b> и точку удерживаем — сильный с помощником <b>делают ТП на следующую точку</b> и сбивают там. Так цепочка не останавливается, а схема телепортации (бесплатно → 1 релокатор) не сбивается.
+    </div>
+  </section>
+
+  <!-- TELEPORT -->
+  <section id="teleport">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <h2>Схема телепортации</h2>
+      <span class="rule"></span>
+      <span class="sec-tag">Тапай по шагам</span>
+    </div>
+    <div class="tl" id="tlSteps">
+      <button class="tl-step free act" data-t="0">
+        <span class="t">Минута 0</span>
+        <div class="v">Бесплатно</div>
+      </button>
+      <button class="tl-step cost" data-t="1">
+        <span class="t">Через 1 мин</span>
+        <div class="v">1 релокатор</div>
+      </button>
+      <button class="tl-step free" data-t="2">
+        <span class="t">Ещё через мин</span>
+        <div class="v">Бесплатно</div>
+      </button>
+      <button class="tl-step free" data-t="3">
+        <span class="t">Далее</span>
+        <div class="v">Повторяем</div>
+      </button>
+    </div>
+    <div class="tl-desc" id="tlDesc"><b>Переместились бесплатно</b> — начался таймер перезарядки телепорта. Дальше действуем по схеме и экономим релокаторы и алмазы.</div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section id="checklist">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <h2>Перед боем</h2>
+      <span class="rule"></span>
+      <span class="sec-tag">Чек-лист</span>
+    </div>
+    <div class="check" id="checkList">
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Глушитель разведки включён</b> — абсолютно все игроки, стоя за лентой до начала боя.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Галочки на отрядах проставлены</b> — по своей группе: Гр.1 → 2 и 3; Гр.2 → 1 и 2; Гр.3 → 1-й дома с галочками на воротах.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Знаю свою группу и задачу</b> — сбитие таймеров / контроль зданий / бочки.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Чат рейда открыт</b> — читаем внимательно с момента начала резервуара.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Релокаторы и релок готовы</b> — для схемы телепортации и обновления гарнизона.</span></label>
+      <div class="check-progress"><span id="cpText">Готовность 0 / 5</span><div class="cp-bar"><i id="cpBar"></i></div></div>
+    </div>
+  </section>
+
+  <!-- RULES -->
+  <section id="rules">
+    <div class="sec-head">
+      <span class="sec-num">08</span>
+      <h2>Общие правила</h2>
+      <span class="rule"></span>
+      <span class="sec-tag">Всё только по плану</span>
+    </div>
+    <div class="rules">
+      <div class="rule-card">
+        <h5><i></i>Делаем</h5>
+        <ul>
+          <li><b>Группы 2 и 3 держат свои точки</b> — бочки и точки захвата не покидаем.</li>
+          <li><b>Сбитие — только группа 1</b>, строго по часовой стрелке.</li>
+          <li><b>Читаем чат рейда</b> — он открывается в момент начала резервуара.</li>
+          <li><b>Защищающий обновляет гарнизон релоком</b>, если в нём меньше 50%.</li>
+          <li><b>Телепортируемся по таймеру</b> — бесплатно / 1 релокатор / бесплатно.</li>
+        </ul>
+      </div>
+      <div class="rule-card red">
+        <h5><i></i>Не делаем</h5>
+        <ul>
+          <li><b>Никуда с точек не бежим</b> и никого не спасаем — всё только по плану.</li>
+          <li><b>Группы 2 и 3 не летят на помощь</b> — за помощь отвечает группа 1.</li>
+          <li><b>Группа 3 не ставит 1-й отряд на бочки</b> — собьётся сбор с нескольких точек.</li>
+          <li><b>Не заходим без глушителя разведки</b> — ни один игрок.</li>
+          <li><b>Не тратим алмазы на телепорты</b> — есть бесконечная схема с релокаторами.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap ft-in">
+    <p>Резервуар · Tiles Survive · гайд по событию</p>
+    <p>Вода побеждает камень</p>
+  </div>
+</footer>
+
+<!-- bottom sheet (мобилка) -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="false">
+  <div class="grab"></div>
+  <button class="close" id="sheetClose" aria-label="Закрыть">✕</button>
+  <div id="sheetBody"></div>
+</div>
+
+<script>
+/* ============ ИНТЕРАКТИВНАЯ КАРТА ============ */
+var ICONS = {
+  drop:'<svg viewBox="0 0 24 24" fill="var(--mk)"><path d="M12 3C12 3 5.5 10.5 5.5 15a6.5 6.5 0 0 0 13 0C18.5 10.5 12 3 12 3Z"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="var(--mk)"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17l-6.1 3.6 1.4-6.8L2.2 9.1l6.9-.8L12 2Z"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24" fill="var(--mk)"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>',
+  flask:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--mk)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.8 18a2.3 2.3 0 0 0 2.1 3h10.2a2.3 2.3 0 0 0 2.1-3L14 8.5V3"/><path d="M7.5 14h9"/></svg>',
+  cross:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--mk)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>',
+  heli:'<svg viewBox="0 0 24 24" fill="var(--mk)"><path d="M7 3h10v2.4H7zM11 8h2v9h-2z"/><path d="M12 10 5 8v6l7 2 7-2V8l-7 2Z" opacity=".55"/><path d="M10 20h4v2h-4z"/></svg>',
+  barrels:'<svg viewBox="0 0 24 24" fill="none" stroke="var(--mk)" stroke-width="2"><circle cx="8" cy="8" r="3.4"/><circle cx="16" cy="8" r="3.4"/><circle cx="12" cy="16" r="3.4"/></svg>'
+};
+var G = {1:'#e05c2a',2:'#4a90c2',3:'#3aa17e'};
+var MARKS = [
+  {x:49.5,y:45.5,icon:'star',g:[1],t:'Центральный резервуар',
+   d:'<b>Два сценария.</b> Мы сильнее — <b>держим центр</b>. Противник ровня или сильнее — сильнейший с помощником <b>только сбивает время захвата</b> и летит на следующие объекты.'},
+  {x:37,y:32,icon:'flask',g:[1,2],t:'База учёных',
+   d:'Точка захвата. <b>Группа 1</b> сбивает таймер по часовой стрелке, <b>группа 2</b> удерживает захваченное и следит за гарнизоном.'},
+  {x:62.7,y:65.5,icon:'cross',g:[2],t:'Военный завод',
+   d:'<b>Приоритет группы 2.</b> Трое сильных игроков на точке. Защищающий обновляет гарнизон релоком, если в нём <b>меньше 50%</b>.'},
+  {x:80.5,y:71,icon:'heli',g:[2],t:'Заброшенная посадочная площадка',
+   d:'<b>Приоритет группы 2</b> — это «вертолётная площадка» из плана. Трое сильных, гарнизон держим полным, отряды 1 и 2 дома, если жгут — 3-й в гарнизон.'},
+  {x:19.5,y:24,icon:'bolt',g:[1,2],t:'Солнечная электростанция',
+   d:'Точка захвата. <b>Группа 1</b> сбивает таймер, <b>группа 2</b> удерживает. Свои точки не покидаем, на помощь не летим.'},
+  {x:64,y:19,icon:'drop',g:[1,2],t:'Водоочистительный центр',
+   d:'Точка захвата. Сбитие таймера — <b>группа 1</b>, контроль после захвата — <b>группа 2</b>.'},
+  {x:34,y:76.5,icon:'drop',g:[1,2],t:'Водоочистительный центр',
+   d:'Точка захвата. Сбитие таймера — <b>группа 1</b>, контроль после захвата — <b>группа 2</b>.'},
+  {x:32.5,y:13,icon:'drop',g:[1,2],t:'Водоперерабатывающий завод',
+   d:'Точка захвата. Работаем по плану: <b>группа 1</b> — таймер, <b>группа 2</b> — удержание.'},
+  {x:75.5,y:15.5,icon:'drop',g:[1,2],t:'Водоперерабатывающий завод',
+   d:'Точка захвата. Работаем по плану: <b>группа 1</b> — таймер, <b>группа 2</b> — удержание.'},
+  {x:24.5,y:82,icon:'drop',g:[1,2],t:'Водоперерабатывающий завод (враж.)',
+   d:'Вражеская точка. <b>Группа 1</b> летит сюда по часовой стрелке сбивать таймер захвата и выбивать противника.'},
+  {x:67,y:84,icon:'drop',g:[1,2],t:'Водоперерабатывающий завод (враж.)',
+   d:'Вражеская точка. <b>Группа 1</b> сбивает таймер, остальные держат свои объекты и не отвлекаются.'},
+  {x:60.5,y:43.5,icon:'barrels',g:[3],t:'Бочки · появятся по ходу ивента',dashed:true,
+   d:'<b>Группа 3.</b> До бочек — бои и <b>180 000 личных очков</b>. После — сидим только на бочках <b>2–5 отрядами</b>, 1-й всегда дома с галочками на воротах.'}
+];
+var inner = document.getElementById('mapInner'),
+    panel = document.getElementById('mapPanel'),
+    sheet = document.getElementById('sheet'),
+    sheetBody = document.getElementById('sheetBody'),
+    scrim = document.getElementById('scrim'),
+    isDesktop = function(){return window.matchMedia('(min-width:900px)').matches};
+
+function markHTML(m){
+  return '<div class="info-head">'
+    + '<span class="info-icon" style="--mk:'+G[m.g[0]]+'">'+(m.icon==='heli'?ICONS.heli:ICONS[m.icon])+'</span>'
+    + '<h3>'+m.t+'</h3></div>'
+    + '<div class="info-groups">'+m.g.map(function(g){return '<span class="ig g'+g+'">Группа '+g+'</span>'}).join('')+'</div>'
+    + '<p class="info-text">'+m.d+'</p>';
+}
+MARKS.forEach(function(m,i){
+  var b=document.createElement('button');
+  b.className='mk'+(m.dashed?' dashed':'');
+  b.style.left=m.x+'%';b.style.top=m.y+'%';
+  b.style.setProperty('--mk',G[m.g[0]]);
+  b.setAttribute('aria-label',m.t);
+  b.innerHTML=ICONS[m.icon];
+  b.dataset.g=m.g.join(',');
+  b.addEventListener('click',function(){
+    if(window.__panned)return;
+    document.querySelectorAll('.mk.sel,.st.sel').forEach(function(x){x.classList.remove('sel')});
+    b.classList.add('sel');
+    var html=markHTML(m);
+    if(isDesktop()){
+      panel.innerHTML=html;
+    }else{
+      sheetBody.innerHTML=html;
+      sheet.classList.add('open');scrim.classList.add('on');
+    }
+  });
+  inner.appendChild(b);
+});
+function closeSheet(){sheet.classList.remove('open');scrim.classList.remove('on');
+  document.querySelectorAll('.mk.sel,.st.sel').forEach(function(x){x.classList.remove('sel')})}
+scrim.addEventListener('click',closeSheet);
+document.getElementById('sheetClose').addEventListener('click',closeSheet);
+
+/* ============ ПАРЫ, ЭТАПЫ МАРШРУТА, НАЗНАЧЕНИЕ ПО ТОЧКАМ ============ */
+var G1A=[['Dragon Hunter',79],['Тебе водить',70],['Повелитель',63],['Elena',62]];
+var G1H=[['Goldranez',87],['Chedrik',65],['КАК ТО ТАК',64],['ПринцессаДури',60]];
+var hasc=G1H.slice().sort(function(x,y){return x[1]-y[1]});
+var PAIRS=G1A.map(function(a,i){return {a:a,h:hasc[i],sum:a[1]+hasc[i][1]}});
+var STAGE_PAIRS=PAIRS.slice().sort(function(x,y){return y.sum-x.sum});
+var STOPS=[{x:24.5,y:81.9},{x:19.5,y:24},{x:32.5,y:13},{x:72,y:17}];
+
+STAGE_PAIRS.forEach(function(p,i){
+  var s=document.createElement('button');
+  s.className='st';s.textContent=i+1;
+  s.style.left=STOPS[i].x+'%';s.style.top=STOPS[i].y+'%';
+  s.setAttribute('aria-label','Этап '+(i+1)+': '+p.a[0]+' и '+p.h[0]);
+  s.addEventListener('click',function(){
+    if(window.__panned)return;
+    document.querySelectorAll('.mk.sel,.st.sel').forEach(function(x){x.classList.remove('sel')});
+    s.classList.add('sel');
+    var html='<div class="info-head"><span class="info-icon" style="--mk:'+G[1]+'">'+ICONS.star+'</span>'
+      +'<h3>Этап '+(i+1)+' · '+p.a[0]+' + '+p.h[0]+'</h3></div>'
+      +'<div class="info-groups"><span class="ig g1">Группа 1</span></div>'
+      +'<p class="info-text">Суммарная сила первых отрядов: <b>'+p.sum+'</b> ('+p.a[0]+' — '+p.a[1]+', '+p.h[0]+' — '+p.h[1]+'). Сбиваем таймер точки; когда до конца захвата остаётся <b>60 сек</b> и точка наша — ТП на следующий этап по часовой стрелке.</p>';
+    if(isDesktop()){panel.innerHTML=html}
+    else{sheetBody.innerHTML=html;sheet.classList.add('open');scrim.classList.add('on')}
+  });
+  inner.appendChild(s);
+});
+
+var routeBtn=document.getElementById('routeToggle');
+routeBtn.addEventListener('click',function(){
+  routeBtn.classList.toggle('act',inner.classList.toggle('route-on'));
+});
+document.getElementById('showRoute').addEventListener('click',function(){
+  inner.classList.add('route-on');routeBtn.classList.add('act');
+  document.getElementById('map').scrollIntoView({behavior:'smooth'});
+});
+
+/* доска назначений группы 2 */
+var MID=[['luki_ink',89],['tihiy.omut',87],['Vantera',85],['Athena.',83],['Орион',82],['Laksa',82],['nEJIMEHb',82],['Alkash228',81],['гусь.',80],['Pop tha Molly',80],['Вый',79],['Madmax',75],['EG Modo',75],['Koalaty',75]];
+var BLDS=[
+  {t:'Военный завод',n:3,icon:'cross',prio:true},
+  {t:'Посадочная площадка',n:3,icon:'heli',prio:true},
+  {t:'База учёных',n:2,icon:'flask'},
+  {t:'Солнечная электростанция',n:2,icon:'bolt'},
+  {t:'Водоочистительный центр · верх',n:2,icon:'drop'},
+  {t:'Водоочистительный центр · низ',n:2,icon:'drop'}
+];
+var asState=[],asSel=null,P={};
+MID.forEach(function(m){P[m[0]]=m[1]});
+function autoAssign(){
+  var srt=MID.slice().sort(function(a,b){return b[1]-a[1]}),i=0;
+  asState=BLDS.map(function(b){var arr=srt.slice(i,i+b.n).map(function(m){return m[0]});i+=b.n;return arr});
+  asSel=null;
+}
+function renderBlds(){
+  var g=document.getElementById('asGrid');g.innerHTML='';
+  BLDS.forEach(function(b,bi){
+    var names=asState[bi],
+        sum=names.reduce(function(a,n){return a+P[n]},0),
+        card=document.createElement('div');
+    card.className='bld'+(b.prio?' prio':'');
+    card.innerHTML='<div class="bld-head"><span class="b-ico" style="--mk:#4a90c2">'+ICONS[b.icon]+'</span><b>'+b.t+'</b><span class="sum">Σ '+sum+'</span></div>';
+    var slots=document.createElement('div');slots.className='slots';
+    names.forEach(function(n,pi){
+      var c=document.createElement('button');c.className='pl';
+      if(asSel&&asSel.b===bi&&asSel.p===pi)c.classList.add('sel');
+      c.innerHTML=n+' <small>'+P[n]+'</small>';
+      c.addEventListener('click',function(){
+        if(!asSel){asSel={b:bi,p:pi}}
+        else{
+          var tmp=asState[asSel.b][asSel.p];
+          asState[asSel.b][asSel.p]=asState[bi][pi];
+          asState[bi][pi]=tmp;
+          asSel=null;
+        }
+        renderBlds();
+      });
+      slots.appendChild(c);
+    });
+    card.appendChild(slots);g.appendChild(card);
+  });
+}
+autoAssign();renderBlds();
+document.getElementById('asReset').addEventListener('click',function(){autoAssign();renderBlds()});
+
+/* пары группы 1 */
+(function(){
+  var pg=document.getElementById('pairGrid');
+  STAGE_PAIRS.forEach(function(p,i){
+    var d=document.createElement('div');d.className='pair';
+    d.innerHTML='<div class="ph2"><span class="stage-n">'+(i+1)+'</span><b>Этап '+(i+1)+' маршрута</b><span class="sum">Σ '+p.sum+'</span></div>'
+      +'<p class="who"><b>'+p.a[0]+'</b> (основа, '+p.a[1]+') + <b>'+p.h[0]+'</b> (помощник, '+p.h[1]+')</p>';
+    pg.appendChild(d);
+  });
+})();
+
+/* фильтр групп на карте */
+document.getElementById('gfilters').addEventListener('click',function(e){
+  var btn=e.target.closest('.gf');if(!btn)return;
+  this.querySelectorAll('.gf').forEach(function(x){x.classList.remove('act')});
+  btn.classList.add('act');
+  var g=btn.dataset.g;
+  document.querySelectorAll('.mk').forEach(function(mk){
+    mk.classList.toggle('dim',g!=='all'&&mk.dataset.g.split(',').indexOf(g)===-1);
+  });
+});
+
+/* ============ ДВИЖОК КАРТЫ: панорама + щипок-зум ============ */
+(function(){
+  var view=document.getElementById('mapView'),
+      W=1200,H=675,
+      s=1,tx=0,ty=0,minS=.15,maxS=4,
+      pts=new Map(),moved=false,pinchD=0,pinchS=1,
+      lastTap=0,lastX=0,lastY=0;
+
+  function apply(){
+    inner.style.transform='translate('+tx+'px,'+ty+'px) scale('+s+')';
+    inner.style.setProperty('--zi',(1/s).toFixed(3));
+  }
+  function clamp(){
+    var vw=view.clientWidth,vh=view.clientHeight;
+    if(W*s<=vw)tx=(vw-W*s)/2;else tx=Math.min(0,Math.max(vw-W*s,tx));
+    if(H*s<=vh)ty=(vh-H*s)/2;else ty=Math.min(0,Math.max(vh-H*s,ty));
+  }
+  function fit(){
+    var vw=view.clientWidth;
+    if(card.classList.contains('full')){
+      var vh=view.clientHeight;
+      s=Math.min(vw/W,vh/H);
+      tx=(vw-W*s)/2;ty=(vh-H*s)/2;
+    }else{
+      s=vw/W;
+      view.style.height=Math.round(H*s)+'px';
+      tx=0;ty=Math.round((view.clientHeight-H*s)/2);
+    }
+    apply();
+  }
+  function zoomAt(cx,cy,f){
+    var ns=Math.min(maxS,Math.max(minS,s*f)),k=ns/s;
+    tx=cx-(cx-tx)*k;ty=cy-(cy-ty)*k;s=ns;
+    clamp();apply();
+  }
+  function center(){return [view.clientWidth/2,view.clientHeight/2]}
+
+  view.addEventListener('pointerdown',function(e){
+    view.setPointerCapture(e.pointerId);
+    pts.set(e.pointerId,[e.clientX,e.clientY]);
+    moved=false;
+    if(pts.size===2){
+      var a=[...pts.values()];
+      pinchD=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);
+      pinchS=s;
+    }
+  });
+  view.addEventListener('pointermove',function(e){
+    if(!pts.has(e.pointerId))return;
+    var prev=pts.get(e.pointerId);
+    pts.set(e.pointerId,[e.clientX,e.clientY]);
+    if(pts.size===1){
+      var dx=e.clientX-prev[0],dy=e.clientY-prev[1];
+      if(Math.abs(dx)+Math.abs(dy)>3)moved=true;
+      if(moved){tx+=dx;ty+=dy;clamp();apply();}
+    }else if(pts.size===2){
+      moved=true;
+      var a=[...pts.values()];
+      var d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);
+      var rect=view.getBoundingClientRect();
+      var cx=(a[0][0]+a[1][0])/2-rect.left,
+          cy=(a[0][1]+a[1][1])/2-rect.top;
+      if(pinchD>0){
+        var ns=Math.min(maxS,Math.max(minS,pinchS*(d/pinchD))),k=ns/s;
+        tx=cx-(cx-tx)*k;ty=(cy-(cy-ty)*k);s=ns;
+        clamp();apply();
+      }
+    }
+  });
+  function up(e){
+    if(pts.has(e.pointerId)){
+      pts.delete(e.pointerId);
+      if(moved){window.__panned=true;setTimeout(function(){window.__panned=false},60)}
+      else if(pts.size===0){
+        /* двойной тап — зум */
+        var now=Date.now(),rect=view.getBoundingClientRect();
+        var x=e.clientX-rect.left,y=e.clientY-rect.top;
+        if(now-lastTap<320&&Math.hypot(x-lastX,y-lastY)<40){
+          var c=center();
+          zoomAt(s<1?c[0]:x,s<1?c[1]:y,1.8);
+          lastTap=0;
+          window.__panned=true;setTimeout(function(){window.__panned=false},90);
+        }else{lastTap=now;lastX=x;lastY=y}
+      }
+    }
+  }
+  view.addEventListener('pointerup',up);
+  view.addEventListener('pointercancel',up);
+  view.addEventListener('wheel',function(e){
+    e.preventDefault();
+    var rect=view.getBoundingClientRect();
+    zoomAt(e.clientX-rect.left,e.clientY-rect.top,e.deltaY<0?1.15:0.87);
+  },{passive:false});
+
+  document.getElementById('zoomIn').addEventListener('click',function(){var c=center();zoomAt(c[0],c[1],1.35)});
+  document.getElementById('zoomOut').addEventListener('click',function(){var c=center();zoomAt(c[0],c[1],0.74)});
+  document.getElementById('zoomFit').addEventListener('click',fit);
+  var card=view.closest('.map-card');
+  document.getElementById('zoomFull').addEventListener('click',function(){
+    card.classList.toggle('full');
+    document.body.style.overflow=card.classList.contains('full')?'hidden':'';
+    setTimeout(fit,60);
+  });
+
+  var hint=document.getElementById('mapHint');
+  view.addEventListener('pointerdown',function once(){
+    if(hint)hint.style.opacity='0',setTimeout(function(){hint.style.display='none'},400);
+    view.removeEventListener('pointerdown',once);
+  });
+
+  window.addEventListener('load',fit);
+  window.addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  fit();
+})();
+
+/* ============ РАСПРЕДЕЛЕНИЕ: поиск + фильтр ============ */
+(function(){
+  var q=document.getElementById('tblSearch'),
+      rows=[].slice.call(document.querySelectorAll('#rosterTbl tbody tr')),
+      btns=[].slice.call(document.querySelectorAll('.tbl-tools .flt')),
+      g='all';
+  function apply(){
+    var needle=q.value.trim().toLowerCase();
+    rows.forEach(function(r){
+      var okG=(g==='all'||r.dataset.g===g),
+          okQ=!needle||r.querySelector('.name').textContent.toLowerCase().indexOf(needle)>-1;
+      r.style.display=(okG&&okQ)?'':'none';
+    });
+  }
+  q.addEventListener('input',apply);
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.classList.remove('act')});
+      b.classList.add('act');g=b.dataset.g;apply();
+    });
+  });
+})();
+
+/* ============ ТЕЛЕПОРТЫ: степпер ============ */
+(function(){
+  var texts=[
+    '<b>Переместились бесплатно</b> — начался таймер перезарядки телепорта. Дальше действуем по схеме.',
+    '<b>Через 1 минуту</b> можно переместиться снова — цена манёвра <b>1 релокатор</b>.',
+    '<b>Ещё через минуту</b> таймер прошёл — телепорт снова <b>бесплатный</b>.',
+    'Цикл <b>бесконечный</b>: бесплатно → 1 релокатор → бесплатно. Так сохраняем и релокаторы, и алмазы.'
+  ];
+  var steps=[].slice.call(document.querySelectorAll('#tlSteps .tl-step')),
+      desc=document.getElementById('tlDesc');
+  steps.forEach(function(s){
+    s.addEventListener('click',function(){
+      steps.forEach(function(x){x.classList.remove('act')});
+      s.classList.add('act');
+      desc.innerHTML=texts[+s.dataset.t];
+    });
+  });
+})();
+
+/* ============ ЧЕК-ЛИСТ ============ */
+(function(){
+  var boxes=[].slice.call(document.querySelectorAll('#checkList input[type=checkbox]')),
+      txt=document.getElementById('cpText'),bar=document.getElementById('cpBar');
+  function upd(){
+    var n=boxes.filter(function(b){return b.checked}).length;
+    txt.textContent='Готовность '+n+' / '+boxes.length+(n===boxes.length?' · К бою готовы!':'');
+    bar.style.width=(n/boxes.length*100)+'%';
+    bar.style.background=n===boxes.length?'var(--g3)':'var(--terra)';
+  }
+  boxes.forEach(function(b){b.addEventListener('change',upd)});
+})();
+</script>
+
+</body>
+</html>
