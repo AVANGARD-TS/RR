@@ -263,18 +263,10 @@ function placeOf(name){
   for(var i=0;i<BLDS.length;i++)if(asState[i]&&asState[i].indexOf(name)>-1)return BLDS[i].l;
   return null;
 }
-function findMatch(res){
-  var best=null,bd=1e9;
-  ROSTER.forEach(function(r){
-    if(r.replaced||r.isRes)return;
-    var d=Math.abs(r.p[0]-res.p[0]);
-    if(d<bd){bd=d;best=r}
-  });
-  return best;
-}
 function doSub(i){
   var res=RES[i];if(res.used)return;
-  var t=findMatch(res);if(!t)return;
+  var sel=document.getElementById('resSel'+i);if(!sel)return;
+  var t=ROSTER[+sel.value];if(!t||t.isRes||t.replaced)return;
   asState.forEach(function(arr){var k=arr.indexOf(t.n);if(k>-1)arr[k]=res.n});
   res.used=true;res.sub=t.n;
   t.replaced=t.n;t.prevP=t.p;t.n=res.n;t.p=res.p.slice();t.isRes=true;
@@ -300,12 +292,13 @@ function renderRes(){
       html+='<div class="res-match">Вышел вместо <b>'+res.sub+'</b> — уже в таблице, на точке и в парах.</div>'
         +'<button class="res-btn undo">↩ Отменить замену</button>';
     }else{
-      var m=findMatch(res);
-      if(m){
-        var pl=m.g===2?placeOf(m.n):null;
-        html+='<div class="res-match">Ближайший по силе: <b>'+m.n+'</b> ('+m.p[0]+') · '+m.role+(pl?', группа '+pl:'')+'</div>'
-          +'<button class="res-btn">Заменить: '+m.n+' → '+res.n+'</button>';
-      }else html+='<div class="res-match">Некого заменять.</div>';
+      html+='<label class="res-lbl">Кого меняет:</label><select class="res-sel" id="resSel'+i+'">';
+      ROSTER.forEach(function(r,ri){
+        if(r.isRes||r.replaced)return;
+        var pl=r.g===2?placeOf(r.n):null;
+        html+='<option value="'+ri+'">'+r.n+' ('+r.p[0]+') · '+r.role+(pl?', группа '+pl:'')+'</option>';
+      });
+      html+='</select><button class="res-btn">Заменить на '+res.n+'</button>';
     }
     card.innerHTML=html;
     var btn=card.querySelector('.res-btn');

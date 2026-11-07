@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Резервуар</title>
 <meta name="description" content="Резервуар в Tiles Survive">
+<link rel="icon" type="image/png" href="assets/icon-reservoir.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
@@ -12,39 +13,39 @@
 </head>
 <body>
 
-<header class="topbar">
-  <div class="tb-row">
-    <div class="logo" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C12 3 5.5 10.5 5.5 15a6.5 6.5 0 0 0 13 0C18.5 10.5 12 3 12 3Z" fill="#fff"/><path d="M9 15.5a3 3 0 0 0 3 3" stroke="#4a90c2" stroke-width="1.8" stroke-linecap="round"/></svg>
-    </div>
-    <div class="tb-title">Резервуар<small>Tiles Survive · гайд по событию</small></div>
-    <span class="tb-badge">30 в строю · 6 в резерве</span>
-  </div>
-  <nav class="chips">
-    <a href="#map">Карта боя</a>
-    <a href="#groups">Группы</a>
-    <a href="#center">Центр</a>
-    <a href="#roster">Распределение</a>
-    <a href="#assign">Точки</a>
-    <a href="#reserve">Резерв</a>
-    <a href="#teleport">Телепорты</a>
-    <a href="#checklist">Перед боем</a>
-    <a href="#rules">Правила</a>
-  </nav>
-</header>
 
 <div class="hero">
-  <div class="hero-bg" aria-hidden="true"></div>
   <div class="wrap hero-in">
-    <h1>Резер<span>вуар</span></h1>
-    <p>Играем в <b>три группы</b>. Ударная группа сбивает таймеры захвата, вторая держит здания, третья качает бочки. Тапай по меткам на карте — там всё расписано по объектам.</p>
-    <div class="hero-meta">
-      <span class="hchip g1"><i></i>Группа 1 · ударная</span>
-      <span class="hchip g2"><i></i>Группа 2 · контроль</span>
-      <span class="hchip g3"><i></i>Группа 3 · бочки</span>
+    <h1 class="sr-only">Гайд по рейду на Резервуар · Tiles Survive</h1>
+    <div class="hero-art">
+      <img src="assets/hero-new.jpg" alt="Tiles Survive — гайд по рейду на Резервуар">
+      <div class="hero-overlay">
+        <span class="hero-kicker">Tiles Survive · гайд по рейду</span>
+        <span class="hero-title">Резервуар</span>
+      </div>
     </div>
-  </div>
-</div>
+    <div class="hero-roles">
+      <div class="role-card" style="--rc:var(--g1);--rcb:#fdeee6">
+        <!-- СЛОТ ДЛЯ ИКОНКИ «ударная»: положи картинку в assets/ и замени svg ниже на <img src="assets/твоя-картинка.png" alt=""> -->
+        <div class="pic-slot"><img src="assets/icon-strike.png" alt="Ударная группа"></div>
+        <div class="role-t"><b>Группа 1 · Ударная</b><span>сбивает таймеры захвата</span></div>
+        <span class="role-n">8 чел</span>
+      </div>
+      <div class="role-card" style="--rc:var(--g2);--rcb:#e8f1f9">
+        <!-- СЛОТ ДЛЯ ИКОНКИ «защита зданий»: положи картинку в assets/ и замени svg ниже на <img src="assets/твоя-картинка.png" alt=""> -->
+        <div class="pic-slot"><img src="assets/icon-shield.png" alt="Защита зданий"></div>
+        <div class="role-t"><b>Группа 2 · Защита</b><span>держит здания</span></div>
+        <span class="role-n">14 чел</span>
+      </div>
+      <div class="role-card" style="--rc:var(--g3);--rcb:#e7f4ef">
+        <!-- СЛОТ ДЛЯ ИКОНКИ «бочки»: положи картинку в assets/ и замени svg ниже на <img src="assets/твоя-картинка.png" alt=""> -->
+        <div class="pic-slot"><img src="assets/icon-barrels.png" alt="Бочки"></div>
+        <div class="role-t"><b>Группа 3 · Бочки</b><span>качает бочки</span></div>
+        <span class="role-n">8 чел</span>
+      </div>
+    </div>
+    <p class="hero-hint">Тапай по меткам на карте — там всё расписано по объектам</p>
+  </div></div>
 
 <div class="wrap">
 
@@ -52,6 +53,7 @@
   <section id="map">
     <div class="sec-head">
       <span class="sec-num">01</span>
+      <img class="sec-emblem" src="assets/icon-map.png" alt="">
       <h2>Карта боя</h2>
       <span class="rule"></span>
       <span class="sec-tag">Тапай по меткам</span>
@@ -105,14 +107,15 @@
 
       <details class="gcard" open style="--gc:var(--g1);--gcb:#fdeee6">
         <summary>
-          <span class="g-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></span>
+          <!-- СЛОТ: можно заменить эту иконку на свою картинку -->
+          <span class="g-ico"><img src="assets/icon-strike.png" alt=""></span>
           <span class="tt"><b>Группа 1 · Ударная</b><small>4 основы + 4 помощника</small></span>
           <span class="g-plus">+</span>
         </summary>
         <div class="g-body">
           <p>Назначение — <b>сбивать таймер точек захвата весь ивент</b>, двигаясь <b>по часовой стрелке</b>. Летаем по карте, помогаем остальным и друг другу выбивать сильных противников.</p>
           <p>Суммарная сила первых отрядов «основа + помощник» уравновешена: <b>самый слабый помощник идёт к самому сильному игроку</b> и т.д. Если основу жгут — помощник первым отрядом заходит к нему в гарнизон. Если помощь не нужна — помощник сбивает противников с бочек.</p>
-          <p><b>Захват точки — 2 минуты.</b> Когда до конца остаётся 60 сек и точка наша — сильный с помощником делают ТП и летят сбивать следующую.</p>
+          <p><b>Захват точки — 2 мин 40 сек.</b> Когда до конца вражеского захвата остаётся <b>60 сек</b> — сильный с помощником делают ТП и летят сбивать таймер.</p>
           <div class="g-squads">
             <span class="sq off">1 отряд</span>
             <span class="sq on">2 отряд</span>
@@ -123,7 +126,8 @@
 
       <details class="gcard" open style="--gc:var(--g2);--gcb:#e8f1f9">
         <summary>
-          <span class="g-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <!-- СЛОТ: можно заменить эту иконку на свою картинку -->
+          <span class="g-ico"><img src="assets/icon-shield.png" alt=""></span>
           <span class="tt"><b>Группа 2 · Защита</b><small>Контроль зданий</small></span>
           <span class="g-plus">+</span>
         </summary>
@@ -140,7 +144,8 @@
 
       <details class="gcard" open style="--gc:var(--g3);--gcb:#e7f4ef">
         <summary>
-          <span class="g-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3C12 3 5.5 10.5 5.5 15a6.5 6.5 0 0 0 13 0C18.5 10.5 12 3 12 3Z"/></svg></span>
+          <!-- СЛОТ: можно заменить эту иконку на свою картинку -->
+          <span class="g-ico"><img src="assets/icon-barrels.png" alt=""></span>
           <span class="tt"><b>Группа 3 · Фарм</b><small>Качаем бочки</small></span>
           <span class="g-plus">+</span>
         </summary>
@@ -161,7 +166,7 @@
   <!-- CENTER -->
   <section id="center">
     <div class="sec-head">
-      <span class="sec-num">03</span>
+      <img class="sec-emblem" src="assets/icon-reservoir.png" alt="">
       <h2>Центральный резервуар</h2>
       <span class="rule"></span>
       <span class="sec-tag">Два сценария</span>
@@ -186,6 +191,7 @@
   <section id="roster">
     <div class="sec-head">
       <span class="sec-num">04</span>
+      <img class="sec-emblem" src="assets/icon-squad.png" alt="">
       <h2>Распределение игроков</h2>
       <span class="rule"></span>
       <span class="sec-tag">Баланс по силам</span>
@@ -220,6 +226,7 @@
   <section id="assign">
     <div class="sec-head">
       <span class="sec-num">05</span>
+      <img class="sec-emblem" src="assets/icon-flag.png" alt="">
       <h2>Назначение по точкам</h2>
       <span class="rule"></span>
       <span class="sec-tag">Авто по силе · тапни двух — поменяются</span>
@@ -239,7 +246,8 @@
     <div class="pair-grid" id="pairGrid"></div>
 
     <div class="as-note">
-      <b>Правило 60 секунд.</b> Захват точки идёт 2 минуты. Когда до конца остаётся <b>60 сек</b> и точку удерживаем — сильный с помощником <b>делают ТП на следующую точку</b> и сбивают там. Так цепочка не останавливается, а схема телепортации (бесплатно → 1 релокатор) не сбивается.
+      <img class="as-note-ico" src="assets/icon-timer.png" alt="">
+      <div><b>Правило 60 секунд.</b> Захват точки идёт <b>2 мин 40 сек</b>. Когда до конца вражеского таймера захвата остаётся <b>60 сек</b> — сильный с помощником <b>делают ТП и летят сбивать</b>. Так цепочка не останавливается, а схема телепортации (бесплатно → 1 релокатор) не сбивается.</div>
     </div>
   </section>
 
@@ -247,11 +255,12 @@
   <section id="reserve">
     <div class="sec-head">
       <span class="sec-num">06</span>
+      <img class="sec-emblem" src="assets/icon-swap.png" alt="">
       <h2>Резерв · замены</h2>
       <span class="rule"></span>
       <span class="sec-tag">Каждый выходит 1 раз</span>
     </div>
-    <p class="res-hint">Замена делается <b>один раз за ивент</b>. Каждому резервисту подобран ближайший по силе I отряда игрок — тапни «Заменить», и резервист встанет в таблицу, на точку и в пары вместо выбывшего.</p>
+    <p class="res-hint">Замена делается <b>один раз за ивент</b>. Выбери в карточке резервиста, кого он меняет, тапни «Заменить» — и резервист встанет в таблицу, на точку и в пары вместо выбывшего.</p>
     <div class="res-grid" id="resGrid"></div>
   </section>
 
@@ -259,6 +268,7 @@
   <section id="teleport">
     <div class="sec-head">
       <span class="sec-num">07</span>
+      <img class="sec-emblem" src="assets/icon-teleport.png" alt="">
       <h2>Схема телепортации</h2>
       <span class="rule"></span>
       <span class="sec-tag">Тапай по шагам</span>
@@ -288,6 +298,7 @@
   <section id="checklist">
     <div class="sec-head">
       <span class="sec-num">08</span>
+      <img class="sec-emblem" src="assets/icon-checklist.png" alt="">
       <h2>Перед боем</h2>
       <span class="rule"></span>
       <span class="sec-tag">Чек-лист</span>
@@ -306,6 +317,7 @@
   <section id="rules">
     <div class="sec-head">
       <span class="sec-num">09</span>
+      <img class="sec-emblem" src="assets/icon-rules.png" alt="">
       <h2>Общие правила</h2>
       <span class="rule"></span>
       <span class="sec-tag">Всё только по плану</span>
@@ -318,6 +330,7 @@
           <li><b>Сбитие — только группа 1</b>, строго по часовой стрелке.</li>
           <li><b>Читаем чат рейда</b> — он открывается в момент начала резервуара.</li>
           <li><b>Защищающий обновляет гарнизон релоком</b>, если в нём меньше 50%.</li>
+          <li><b>Захват точки — 2 мин 40 сек</b>: за 60 сек до конца вражеского захвата сильный с помощником летят сбивать таймер.</li>
           <li><b>Телепортируемся по таймеру</b> — бесплатно / 1 релокатор / бесплатно.</li>
         </ul>
       </div>
@@ -350,6 +363,16 @@
   <button class="close" id="sheetClose" aria-label="Закрыть">✕</button>
   <div id="sheetBody"></div>
 </div>
+
+
+<!-- плавающая навигация -->
+<nav class="dock">
+  <a href="#map">Карта</a>
+  <a href="#roster">Состав</a>
+  <a href="#assign">Точки</a>
+  <a href="#reserve">Резерв</a>
+  <a href="#rules">Правила</a>
+</nav>
 
 <script src="app.js" defer></script>
 
