@@ -23,17 +23,17 @@ var ROSTER=[
   {n:'tihiy.omut',g:2,role:'Средние',p:[87,63,53],gates:[]},
   {n:'Vantera',g:2,role:'Средние',p:[85,55,52],gates:[]},
   {n:'Athena.',g:2,role:'Средние',p:[83,57,56],gates:[]},
-  {n:'Орион',g:2,role:'Средние',p:[82,57,52],gates:[]},
+  {n:'Харон',g:2,role:'Средние',p:[81,65,94],gates:[],rs:'Орион'},
   {n:'Laksa',g:2,role:'Средние',p:[82,47,44],gates:[]},
-  {n:'nEJIMEHb',g:2,role:'Средние',p:[82,54,48],gates:[]},
+  {n:"The Devil's Pet",g:2,role:'Средние',p:[87,55,52],gates:[],rs:'nEJIMEHb'},
   {n:'Alkash228',g:2,role:'Средние',p:[81,47,44],gates:[]},
   {n:'гусь.',g:2,role:'Средние',p:[80,53,46],gates:[]},
   {n:'Pop tha Molly',g:2,role:'Средние',p:[80,59,51],gates:[]},
-  {n:'Вий',g:2,role:'Средние',p:[79,56,51],gates:[]},
+  {n:'Олька',g:2,role:'Средние',p:[75,45,45],gates:[],rs:'Вий'},
   {n:'Madmax',g:2,role:'Средние',p:[75,53,44],gates:[]},
   {n:'EG Modo',g:2,role:'Средние',p:[75,54,50],gates:[]},
   {n:'Koalaty',g:2,role:'Средние',p:[75,55,50],gates:[]},
-  {n:'Tatiana',g:3,role:'Бочки',p:[67,47,42],gates:[1]},
+  {n:'Valkyrie',g:3,role:'Бочки',p:[67,47,43],gates:[1],rs:'Tatiana'},
   {n:'ANGELina',g:3,role:'Бочки',p:[72,54,49],gates:[1]},
   {n:'Milfa007',g:3,role:'Бочки',p:[65,48,44],gates:[1]},
   {n:'Annkor',g:3,role:'Бочки',p:[73,46,42],gates:[1]},
@@ -43,12 +43,11 @@ var ROSTER=[
   {n:'Serega',g:3,role:'Бочки',p:[67,47,null],gates:[1]}
 ];
 var RES=[
-  {n:'ros',p:[69,60,48]},
-  {n:'DAVID.',p:[54,42,35]},
-  {n:'Олька',p:[75,45,45]},
-  {n:'Коба',p:[69,46,43]},
   {n:'WóòLF',p:[92,57,50]},
-  {n:'Valkyrie',p:[67,47,43]}
+  {n:'Ана 4а',p:[70,52,49]},
+  {n:'ros',p:[69,60,48]},
+  {n:'Коба',p:[69,46,43]},
+  {n:'DAVID.',p:[54,42,35]}
 ];
 RES.forEach(function(r){r.used=false;r.sub=null});
 var G3=[],MID=[],G1A=[],G1H=[],PAIRS=[],STAGE_PAIRS=[],P={};
@@ -57,9 +56,9 @@ function renderRoster(){
   var tb=document.getElementById('rosterBody');if(!tb)return;tb.innerHTML='';
   ROSTER.forEach(function(r){
     var tr=document.createElement('tr');
-    tr.className='g'+r.g+(r.replaced?' sub':'');tr.dataset.g=r.g;
-    tr.innerHTML='<td class="name">'+r.n+(r.replaced?'<span class="subnote">вместо '+r.replaced+'</span>':'')+'</td>'
-      +'<td><span class="gtag">'+r.role+'</span>'+(r.replaced?'<span class="subtag">резерв</span>':'')
+    tr.className='g'+r.g+(r.replaced||r.rs?' sub':'');tr.dataset.g=r.g;
+    tr.innerHTML='<td class="name">'+r.n+(r.replaced?'<span class="subnote">вместо '+r.replaced+'</span>':'')+(r.rs?'<span class="subnote">из резерва, за '+r.rs+'</span>':'')+'</td>'
+      +'<td><span class="gtag">'+r.role+'</span>'+(r.replaced||r.rs?'<span class="subtag">резерв</span>':'')
       +(r.g===2?'<span class="gplace" data-p="'+r.n+'"></span>':'')+'</td>'
       +'<td class="num">'+gateCell(r.p[0],r.gates.indexOf(1)>-1)+'</td>'
       +'<td class="num">'+gateCell(r.p[1],r.gates.indexOf(2)>-1)+'</td>'
@@ -244,7 +243,7 @@ function renderBlds(){
   updateMapLabels();
 }
 autoAssign();renderBlds();
-document.getElementById('asReset').addEventListener('click',function(){autoAssign();renderBlds()});
+var asR=document.getElementById('asReset');if(asR)asR.addEventListener('click',function(){autoAssign();renderBlds()});
 
 /* пары группы 1 */
 function renderPairs(){
@@ -263,10 +262,18 @@ function placeOf(name){
   for(var i=0;i<BLDS.length;i++)if(asState[i]&&asState[i].indexOf(name)>-1)return BLDS[i].l;
   return null;
 }
+function findMatch(res){
+  var best=null,bd=1e9;
+  ROSTER.forEach(function(r){
+    if(r.replaced||r.isRes)return;
+    var d=Math.abs(r.p[0]-res.p[0]);
+    if(d<bd){bd=d;best=r}
+  });
+  return best;
+}
 function doSub(i){
   var res=RES[i];if(res.used)return;
-  var sel=document.getElementById('resSel'+i);if(!sel)return;
-  var t=ROSTER[+sel.value];if(!t||t.isRes||t.replaced)return;
+  var t=findMatch(res);if(!t)return;
   asState.forEach(function(arr){var k=arr.indexOf(t.n);if(k>-1)arr[k]=res.n});
   res.used=true;res.sub=t.n;
   t.replaced=t.n;t.prevP=t.p;t.n=res.n;t.p=res.p.slice();t.isRes=true;
@@ -292,13 +299,12 @@ function renderRes(){
       html+='<div class="res-match">Вышел вместо <b>'+res.sub+'</b> — уже в таблице, на точке и в парах.</div>'
         +'<button class="res-btn undo">↩ Отменить замену</button>';
     }else{
-      html+='<label class="res-lbl">Кого меняет:</label><select class="res-sel" id="resSel'+i+'">';
-      ROSTER.forEach(function(r,ri){
-        if(r.isRes||r.replaced)return;
-        var pl=r.g===2?placeOf(r.n):null;
-        html+='<option value="'+ri+'">'+r.n+' ('+r.p[0]+') · '+r.role+(pl?', группа '+pl:'')+'</option>';
-      });
-      html+='</select><button class="res-btn">Заменить на '+res.n+'</button>';
+      var m=findMatch(res);
+      if(m){
+        var pl=m.g===2?placeOf(m.n):null;
+        html+='<div class="res-match">Ближайший по силе I отряда: <b>'+m.n+'</b> ('+m.p[0]+') · '+m.role+(pl?', группа '+pl:'')+'</div>'
+          +'<button class="res-btn">Заменить: '+m.n+' → '+res.n+'</button>';
+      }else html+='<div class="res-match">Некого заменять.</div>';
     }
     card.innerHTML=html;
     var btn=card.querySelector('.res-btn');
