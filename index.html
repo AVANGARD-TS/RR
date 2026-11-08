@@ -13,38 +13,42 @@
 </head>
 <body>
 
+<div class="lang-sw" role="group" aria-label="Язык / Language">
+  <button data-lang="ru" class="act">RU</button>
+  <button data-lang="en">EN</button>
+</div>
 
 <div class="hero">
   <div class="wrap hero-in">
-    <h1 class="sr-only">Гайд по рейду на Резервуар · Tiles Survive</h1>
+    <h1 class="sr-only" data-i18n="h1">Гайд по рейду на Резервуар · Tiles Survive</h1>
     <div class="hero-art">
       <img src="assets/hero-new.jpg" alt="Tiles Survive — гайд по рейду на Резервуар">
       <div class="hero-overlay">
-        <span class="hero-kicker">Tiles Survive · гайд по рейду</span>
-        <span class="hero-title">Резервуар</span>
+        <span class="hero-kicker" data-i18n="kicker">Tiles Survive · гайд по рейду</span>
+        <span class="hero-title" data-i18n="heroTitle">Резервуар</span>
       </div>
     </div>
     <div class="hero-roles">
       <div class="role-card" style="--rc:var(--g1);--rcb:#fdeee6">
         <!-- СЛОТ ДЛЯ ИКОНКИ «ударная»: положи картинку в assets/ и замени svg ниже на <img src="assets/твоя-картинка.png" alt=""> -->
         <div class="pic-slot"><img src="assets/icon-strike.png" alt="Ударная группа"></div>
-        <div class="role-t"><b>Группа 1 · Ударная</b><span>сбивает таймеры захвата</span></div>
-        <span class="role-n">8 чел</span>
+        <div class="role-t"><b data-i18n="r1t">Группа 1 · Ударная</b><span data-i18n="r1s">сбивает таймеры захвата</span></div>
+        <span class="role-n" data-i18n="ppl8">8 чел</span>
       </div>
       <div class="role-card" style="--rc:var(--g2);--rcb:#e8f1f9">
         <!-- СЛОТ ДЛЯ ИКОНКИ «защита зданий»: положи картинку в assets/ и замени svg ниже на <img src="assets/твоя-картинка.png" alt=""> -->
         <div class="pic-slot"><img src="assets/icon-shield.png" alt="Защита зданий"></div>
-        <div class="role-t"><b>Группа 2 · Защита</b><span>держит здания</span></div>
-        <span class="role-n">14 чел</span>
+        <div class="role-t"><b data-i18n="r2t">Группа 2 · Защита</b><span data-i18n="r2s">держит здания</span></div>
+        <span class="role-n" data-i18n="ppl14">14 чел</span>
       </div>
       <div class="role-card" style="--rc:var(--g3);--rcb:#e7f4ef">
         <!-- СЛОТ ДЛЯ ИКОНКИ «бочки»: положи картинку в assets/ и замени svg ниже на <img src="assets/твоя-картинка.png" alt=""> -->
         <div class="pic-slot"><img src="assets/icon-barrels.png" alt="Бочки"></div>
-        <div class="role-t"><b>Группа 3 · Бочки</b><span>качает бочки</span></div>
-        <span class="role-n">8 чел</span>
+        <div class="role-t"><b data-i18n="r3t">Группа 3 · Бочки</b><span data-i18n="r3s">качает бочки</span></div>
+        <span class="role-n" data-i18n="ppl8">8 чел</span>
       </div>
     </div>
-    <p class="hero-hint">Тапай по меткам на карте — там всё расписано по объектам</p>
+    <p class="hero-hint" data-i18n="heroHint">Тапай по меткам на карте — там всё расписано по объектам</p>
   </div></div>
 
 <div class="wrap">
@@ -54,21 +58,21 @@
     <div class="sec-head">
       <span class="sec-num">01</span>
       <img class="sec-emblem" src="assets/icon-map.png" alt="">
-      <h2>Карта боя</h2>
+      <h2 data-i18n="s1h">Карта боя</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Тапай по меткам</span>
+      <span class="sec-tag" data-i18n="s1tag">Тапай по меткам</span>
     </div>
     <div class="map-card">
       <div class="map-toolbar">
         <span class="t">
           <svg viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/></svg>
-          Объекты и задачи
+          <span data-i18n="mapToolbar">Объекты и задачи</span>
         </span>
         <div class="gfilters" id="gfilters">
-          <button class="gf act" data-g="all"><i style="background:var(--terra)"></i>Все</button>
-          <button class="gf" data-g="1"><i></i>Ударная</button>
-          <button class="gf" data-g="2"><i></i>Средние</button>
-          <button class="gf" data-g="3"><i></i>Бочки</button>
+          <button class="gf act" data-g="all"><i style="background:var(--terra)"></i><span data-i18n="fAll">Все</span></button>
+          <button class="gf" data-g="1"><i></i><span data-i18n="f1">Ударная</span></button>
+          <button class="gf" data-g="2"><i></i><span data-i18n="f2">Средние</span></button>
+          <button class="gf" data-g="3"><i></i><span data-i18n="f3">Бочки</span></button>
         </div>
       </div>
       <div class="map-flex">
@@ -79,19 +83,19 @@
               <!-- метки рендерятся скриптом -->
             </div>
           </div>
-          <div class="map-hint" id="mapHint">Щипок — зум · тап по метке — состав</div>
+          <div class="map-hint" id="mapHint" data-i18n="mapHint">Щипок — зум · тап по метке — состав</div>
           <div class="zoom">
-            <button id="zoomFull" aria-label="Во весь экран" title="Во весь экран">⛶</button>
-            <button id="zoomFit" aria-label="Вся карта" title="Вся карта">⊡</button>
-            <button id="zoomIn" aria-label="Приблизить">+</button>
-            <button id="zoomOut" aria-label="Отдалить">−</button>
+            <button id="zoomFull" data-i18n-aria="zFull" aria-label="Во весь экран" title="Во весь экран">⛶</button>
+            <button id="zoomFit" data-i18n-aria="zFit" aria-label="Вся карта" title="Вся карта">⊡</button>
+            <button id="zoomIn" data-i18n-aria="zIn" aria-label="Приблизить">+</button>
+            <button id="zoomOut" data-i18n-aria="zOut" aria-label="Отдалить">−</button>
           </div>
         </div>
         <aside class="map-panel" id="mapPanel">
-          <p class="ph">Выбери метку на карте — здесь появится описание объекта и задачи групп.</p>
+          <p class="ph" data-i18n="mapPh">Выбери метку на карте — здесь появится описание объекта и задачи групп.</p>
         </aside>
       </div>
-      <p class="map-note"><b>Синие метки с буквами</b> — наши здания: на них стоят группы А–Е, состав виден прямо на карте (приблизь или тапни метку). <b>Зелёные</b> — бочки, общая группа 3. <b>Красные</b> — точки противника.</p>
+      <p class="map-note" data-i18n-html="mapNote"><b>Синие метки с буквами</b> — наши здания: на них стоят группы А–Е, состав виден прямо на карте (приблизь или тапни метку). <b>Зелёные</b> — бочки, общая группа 3. <b>Красные</b> — точки противника.</p>
     </div>
   </section>
 
@@ -99,9 +103,9 @@
   <section id="groups">
     <div class="sec-head">
       <span class="sec-num">02</span>
-      <h2>Группы и задачи</h2>
+      <h2 data-i18n="s2h">Группы и задачи</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Тап — свернуть</span>
+      <span class="sec-tag" data-i18n="s2tag">Тап — свернуть</span>
     </div>
     <div class="groups-grid">
 
@@ -109,17 +113,17 @@
         <summary>
           <!-- СЛОТ: можно заменить эту иконку на свою картинку -->
           <span class="g-ico"><img src="assets/icon-strike.png" alt=""></span>
-          <span class="tt"><b>Группа 1 · Ударная</b><small>4 основы + 4 помощника</small></span>
+          <span class="tt"><b data-i18n="g1t">Группа 1 · Ударная</b><small data-i18n="g1s">4 основы + 4 помощника</small></span>
           <span class="g-plus">+</span>
         </summary>
         <div class="g-body">
-          <p>Назначение — <b>сбивать таймер точек захвата весь ивент</b>, двигаясь <b>по часовой стрелке</b>. Летаем по карте, помогаем остальным и друг другу выбивать сильных противников.</p>
-          <p>Суммарная сила первых отрядов «основа + помощник» уравновешена: <b>самый слабый помощник идёт к самому сильному игроку</b> и т.д. Если основу жгут — помощник первым отрядом заходит к нему в гарнизон. Если помощь не нужна — помощник сбивает противников с бочек.</p>
-          <p><b>Захват точки — 2 мин 40 сек.</b> Когда до конца вражеского захвата остаётся <b>60 сек</b> — сильный с помощником делают ТП и летят сбивать таймер.</p>
+          <p data-i18n-html="g1p1">Назначение — <b>сбивать таймер точек захвата весь ивент</b>, двигаясь <b>по часовой стрелке</b>. Летаем по карте, помогаем остальным и друг другу выбивать сильных противников.</p>
+          <p data-i18n-html="g1p2">Суммарная сила первых отрядов «основа + помощник» уравновешена: <b>самый слабый помощник идёт к самому сильному игроку</b> и т.д. Если основу жгут — помощник первым отрядом заходит к нему в гарнизон. Если помощь не нужна — помощник сбивает противников с бочек.</p>
+          <p data-i18n-html="g1p3"><b>Захват точки — 2 мин 40 сек.</b> Когда до конца вражеского захвата остаётся <b>60 сек</b> — сильный с помощником делают ТП и летят сбивать таймер.</p>
           <div class="g-squads">
-            <span class="sq off">1 отряд</span>
-            <span class="sq on">2 отряд</span>
-            <span class="sq on">3 отряд</span>
+            <span class="sq off" data-i18n="sq1">1 отряд</span>
+            <span class="sq on" data-i18n="sq2">2 отряд</span>
+            <span class="sq on" data-i18n="sq3">3 отряд</span>
           </div>
         </div>
       </details>
@@ -128,17 +132,17 @@
         <summary>
           <!-- СЛОТ: можно заменить эту иконку на свою картинку -->
           <span class="g-ico"><img src="assets/icon-shield.png" alt=""></span>
-          <span class="tt"><b>Группа 2 · Защита</b><small>Контроль зданий</small></span>
+          <span class="tt"><b data-i18n="g2t">Группа 2 · Защита</b><small data-i18n="g2s">Контроль зданий</small></span>
           <span class="g-plus">+</span>
         </summary>
         <div class="g-body">
-          <p>Обеспечиваем <b>контроль захваченных зданий</b>. Приоритет — <b>вертолетная площадка</b> и <b>военный завод</b>: на каждом по <b>три сильных игрока</b>.</p>
-          <p>Распределяемся по 2–3 человека, в каждой связке — <b>один защищающий</b>: он следит за гарнизоном и обновляет его релоком, если в гарнизоне <b>меньше 50%</b> — отошёл в сторону, вода качается дальше, а в гарнизон идёт уже полный отряд. Остальные 1–2 человека сжигают противника или выигрывают время на переотправку.</p>
+          <p data-i18n-html="g2p1">Обеспечиваем <b>контроль захваченных зданий</b>. Приоритет — <b>вертолетная площадка</b> и <b>военный завод</b>: на каждом по <b>три сильных игрока</b>.</p>
+          <p data-i18n-html="g2p2">Распределяемся по 2–3 человека, в каждой связке — <b>один защищающий</b>: он следит за гарнизоном и обновляет его релоком, если в гарнизоне <b>меньше 50%</b> — отошёл в сторону, вода качается дальше, а в гарнизон идёт уже полный отряд. Остальные 1–2 человека сжигают противника или выигрывают время на переотправку.</p>
           <div class="g-squads">
-            <span class="sq on">1 отряд</span>
-            <span class="sq on">2 отряд</span>
+            <span class="sq on" data-i18n="sq1">1 отряд</span>
+            <span class="sq on" data-i18n="sq2">2 отряд</span>
           </div>
-          <p style="margin-top:10px">Если жгут: 1 и 2 дома, <b>3-й в гарнизон</b>. Если не жгут: в гарнизон 1 отряд, галочки на 2 и 3.</p>
+          <p style="margin-top:10px" data-i18n-html="g2p3">Если жгут: 1 и 2 дома, <b>3-й в гарнизон</b>. Если не жгут: в гарнизон 1 отряд, галочки на 2 и 3.</p>
         </div>
       </details>
 
@@ -146,17 +150,17 @@
         <summary>
           <!-- СЛОТ: можно заменить эту иконку на свою картинку -->
           <span class="g-ico"><img src="assets/icon-barrels.png" alt=""></span>
-          <span class="tt"><b>Группа 3 · Фарм</b><small>Качаем бочки</small></span>
+          <span class="tt"><b data-i18n="g3t">Группа 3 · Фарм</b><small data-i18n="g3s">Качаем бочки</small></span>
           <span class="g-plus">+</span>
         </summary>
         <div class="g-body">
-          <p>До появления бочек — <b>смотрим на карту и летим туда, где больше всего боёв</b>: сжигаем противников, садимся в гарнизоны, помогаем захватывать здания. Задача — набить <b>180 000 личных очков</b>: сидя на бочках, такой возможности не будет.</p>
-          <p>После появления бочек сидим <b>только на бочках</b>, отрядами 2–5.</p>
+          <p data-i18n-html="g3p1">До появления бочек — <b>смотрим на карту и летим туда, где больше всего боёв</b>: сжигаем противников, садимся в гарнизоны, помогаем захватывать здания. Задача — набить <b>180 000 личных очков</b>: сидя на бочках, такой возможности не будет.</p>
+          <p data-i18n-html="g3p2">После появления бочек сидим <b>только на бочках</b>, отрядами 2–5.</p>
           <div class="g-squads">
-            <span class="sq on">1 дома</span>
-            <span class="sq off">2–5 отряды</span>
+            <span class="sq on" data-i18n="sqHome">1 дома</span>
+            <span class="sq off" data-i18n="sq25">2–5 отряды</span>
           </div>
-          <div class="g-warn">1-й отряд всегда дома и с галочками на воротах — иначе телепорт за ленту собьёт сбор сразу с нескольких точек. Если противник сильный: качаем 3–5 отрядами, 1 и 2 дома.</div>
+          <div class="g-warn" data-i18n="g3warn">1-й отряд всегда дома и с галочками на воротах — иначе телепорт за ленту собьёт сбор сразу с нескольких точек. Если противник сильный: качаем 3–5 отрядами, 1 и 2 дома.</div>
         </div>
       </details>
 
@@ -167,22 +171,22 @@
   <section id="center">
     <div class="sec-head">
       <img class="sec-emblem" src="assets/icon-reservoir.png" alt="">
-      <h2>Центральный резервуар</h2>
+      <h2 data-i18n="s3h">Центральный резервуар</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Два сценария</span>
+      <span class="sec-tag" data-i18n="s3tag">Два сценария</span>
     </div>
     <div class="scen">
       <div class="scen-card" style="--sc:var(--g3)">
-        <span class="sc-if">Если мы сильнее</span>
-        <h4>Сценарий 1</h4>
-        <p>Самый сильный игрок и его помощник <b>в состоянии самостоятельно удержать центральный резервуар</b> у противника.</p>
-        <span class="verdict">Центр держим</span>
+        <span class="sc-if" data-i18n="scIf1">Если мы сильнее</span>
+        <h4 data-i18n="sc1h">Сценарий 1</h4>
+        <p data-i18n-html="sc1p">Самый сильный игрок и его помощник <b>в состоянии самостоятельно удержать центральный резервуар</b> у противника.</p>
+        <span class="verdict" data-i18n="sc1v">Центр держим</span>
       </div>
       <div class="scen-card" style="--sc:var(--g1)">
-        <span class="sc-if">Противник ровня или сильнее</span>
-        <h4>Сценарий 2</h4>
-        <p>Самый сильный игрок и его помощник летят <b>только сбивать время захвата</b>. Дальше перемещаются на необходимые объекты — и там так же сбивают время.</p>
-        <span class="verdict">Сбиваем время, не удерживаем</span>
+        <span class="sc-if" data-i18n="scIf2">Противник ровня или сильнее</span>
+        <h4 data-i18n="sc2h">Сценарий 2</h4>
+        <p data-i18n-html="sc2p">Самый сильный игрок и его помощник летят <b>только сбивать время захвата</b>. Дальше перемещаются на необходимые объекты — и там так же сбивают время.</p>
+        <span class="verdict" data-i18n="sc2v">Сбиваем время, не удерживаем</span>
       </div>
     </div>
   </section>
@@ -192,24 +196,24 @@
     <div class="sec-head">
       <span class="sec-num">04</span>
       <img class="sec-emblem" src="assets/icon-squad.png" alt="">
-      <h2>Распределение игроков</h2>
+      <h2 data-i18n="s4h">Распределение игроков</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Баланс по силам</span>
+      <span class="sec-tag" data-i18n="s4tag">Баланс по силам</span>
     </div>
     <div class="tbl-tools">
-      <input class="tbl-search" id="tblSearch" type="text" placeholder="Поиск по нику…" autocomplete="off">
-      <button class="flt act" data-g="all">Все</button>
-      <button class="flt" data-g="1">Группа 1</button>
-      <button class="flt" data-g="2">Средние</button>
-      <button class="flt" data-g="3">Бочки</button>
+      <input class="tbl-search" id="tblSearch" type="text" placeholder="Поиск по нику…" autocomplete="off" data-i18n-ph="searchPh">
+      <button class="flt act" data-g="all"><span data-i18n="fAll">Все</span></button>
+      <button class="flt" data-g="1"><span data-i18n="fg1">Группа 1</span></button>
+      <button class="flt" data-g="2"><span data-i18n="f2">Средние</span></button>
+      <button class="flt" data-g="3"><span data-i18n="f3">Бочки</span></button>
     </div>
     <div class="tbl-card">
       <div class="tbl-scroll">
         <table id="rosterTbl">
           <thead>
             <tr>
-              <th>Игрок</th>
-              <th>Группа</th>
+              <th data-i18n="thPlayer">Игрок</th>
+              <th data-i18n="thGroup">Группа</th>
               <th class="num">I</th>
               <th class="num">II</th>
               <th class="num">III</th>
@@ -219,7 +223,7 @@
         </table>
       </div>
     </div>
-    <p class="tbl-foot">I, II, III — сила отрядов · ✓ — отряд с галкой: остаётся на воротах · синяя буква — группа по точкам (А–Е)</p>
+    <p class="tbl-foot" data-i18n="tblFoot">I, II, III — сила отрядов · ✓ — отряд с галкой: остаётся на воротах · синяя буква — группа по точкам (А–Е)</p>
   </section>
 
   <!-- ASSIGN -->
@@ -227,26 +231,26 @@
     <div class="sec-head">
       <span class="sec-num">05</span>
       <img class="sec-emblem" src="assets/icon-flag.png" alt="">
-      <h2>Назначение по точкам</h2>
+      <h2 data-i18n="s5h">Назначение по точкам</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Авто по силе · тапни двух — поменяются</span>
+      <span class="sec-tag" data-i18n="s5tag">Авто по силе · тапни двух — поменяются</span>
     </div>
 
-    <h3 class="as-sub s2"><i></i>Группа 2 · кто где стоит</h3>
+    <h3 class="as-sub s2"><i></i><span data-i18n="as2">Группа 2 · кто где стоит</span></h3>
     <div class="as-tools">
-      <span class="as-hint">Координация по буквам: завод — группа А, вертолётка — Б, дальше В–Е по два человека. Тапни двух игроков — поменяются местами.</span>
+      <span class="as-hint" data-i18n="as2hint">Координация по буквам: завод — группа А, вертолётка — Б, дальше В–Е по два человека. Тапни двух игроков — поменяются местами.</span>
     </div>
     <div class="as-grid" id="asGrid"></div>
 
-    <h3 class="as-sub s1"><i></i>Группа 1 · пары для сбития</h3>
+    <h3 class="as-sub s1"><i></i><span data-i18n="as1">Группа 1 · пары для сбития</span></h3>
     <div class="as-tools">
-      <span class="as-hint">Пары собраны по правилу: самый слабый помощник — к самому сильному. Летят по часовой стрелке, очередь точек решается по ходу боя.</span>
+      <span class="as-hint" data-i18n="as1hint">Пары собраны по правилу: самый слабый помощник — к самому сильному. Летят по часовой стрелке, очередь точек решается по ходу боя.</span>
     </div>
     <div class="pair-grid" id="pairGrid"></div>
 
     <div class="as-note">
       <img class="as-note-ico" src="assets/icon-timer.png" alt="">
-      <div><b>Правило 60 секунд.</b> Захват точки идёт <b>2 мин 40 сек</b>. Когда до конца вражеского таймера захвата остаётся <b>60 сек</b> — сильный с помощником <b>делают ТП и летят сбивать</b>. Так цепочка не останавливается, а схема телепортации (бесплатно → 1 релокатор) не сбивается.</div>
+      <div data-i18n-html="asNote"><b>Правило 60 секунд.</b> Захват точки идёт <b>2 мин 40 сек</b>. Когда до конца вражеского таймера захвата остаётся <b>60 сек</b> — сильный с помощником <b>делают ТП и летят сбивать</b>. Так цепочка не останавливается, а схема телепортации (бесплатно → 1 релокатор) не сбивается.</div>
     </div>
   </section>
 
@@ -255,11 +259,11 @@
     <div class="sec-head">
       <span class="sec-num">06</span>
       <img class="sec-emblem" src="assets/icon-swap.png" alt="">
-      <h2>Резерв · замены</h2>
+      <h2 data-i18n="s6h">Резерв · замены</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Каждый выходит 1 раз</span>
+      <span class="sec-tag" data-i18n="s6tag">Каждый выходит 1 раз</span>
     </div>
-    <p class="res-hint">Замена делается <b>один раз за ивент</b>. Каждому резервисту уже подобран <b>ближайший по силе I отряда</b> игрок — тапни «Заменить», и резервист встанет в таблицу, на точку и в пары вместо выбывшего.</p>
+    <p class="res-hint" data-i18n-html="resHint">Замена делается <b>один раз за ивент</b>. Каждому резервисту уже подобран <b>ближайший по силе I отряда</b> игрок — тапни «Заменить», и резервист встанет в таблицу, на точку и в пары вместо выбывшего.</p>
     <div class="res-grid" id="resGrid"></div>
   </section>
 
@@ -268,29 +272,29 @@
     <div class="sec-head">
       <span class="sec-num">07</span>
       <img class="sec-emblem" src="assets/icon-teleport.png" alt="">
-      <h2>Схема телепортации</h2>
+      <h2 data-i18n="s7h">Схема телепортации</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Тапай по шагам</span>
+      <span class="sec-tag" data-i18n="s7tag">Тапай по шагам</span>
     </div>
     <div class="tl" id="tlSteps">
       <button class="tl-step free act" data-t="0">
-        <span class="t">Минута 0</span>
-        <div class="v">Бесплатно</div>
+        <span class="t" data-i18n="tls1t">Минута 0</span>
+        <div class="v" data-i18n="tls1v">Бесплатно</div>
       </button>
       <button class="tl-step cost" data-t="1">
-        <span class="t">Через 1 мин</span>
-        <div class="v">1 релокатор</div>
+        <span class="t" data-i18n="tls2t">Через 1 мин</span>
+        <div class="v" data-i18n="tls2v">1 релокатор</div>
       </button>
       <button class="tl-step free" data-t="2">
-        <span class="t">Ещё через мин</span>
-        <div class="v">Бесплатно</div>
+        <span class="t" data-i18n="tls3t">Ещё через мин</span>
+        <div class="v" data-i18n="tls3v">Бесплатно</div>
       </button>
       <button class="tl-step free" data-t="3">
-        <span class="t">Далее</span>
-        <div class="v">Повторяем</div>
+        <span class="t" data-i18n="tls4t">Далее</span>
+        <div class="v" data-i18n="tls4v">Повторяем</div>
       </button>
     </div>
-    <div class="tl-desc" id="tlDesc"><b>Переместились бесплатно</b> — начался таймер перезарядки телепорта. Дальше действуем по схеме и экономим релокаторы и алмазы.</div>
+    <div class="tl-desc" id="tlDesc" data-i18n-html="tl0"><b>Переместились бесплатно</b> — начался таймер перезарядки телепорта. Дальше действуем по схеме и экономим релокаторы и алмазы.</div>
   </section>
 
   <!-- CHECKLIST -->
@@ -298,16 +302,16 @@
     <div class="sec-head">
       <span class="sec-num">08</span>
       <img class="sec-emblem" src="assets/icon-checklist.png" alt="">
-      <h2>Перед боем</h2>
+      <h2 data-i18n="s8h">Перед боем</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Чек-лист</span>
+      <span class="sec-tag" data-i18n="s8tag">Чек-лист</span>
     </div>
     <div class="check" id="checkList">
-      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Глушитель разведки включён</b> — абсолютно все игроки, стоя за лентой до начала боя.</span></label>
-      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Галочки на отрядах проставлены</b> — по своей группе: Гр.1 → 2 и 3; Гр.2 → 1 и 2; Гр.3 → 1-й дома с галочками на воротах.</span></label>
-      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Знаю свою группу и задачу</b> — сбитие таймеров / контроль зданий / бочки.</span></label>
-      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Чат рейда открыт</b> — читаем внимательно с момента начала резервуара.</span></label>
-      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt"><b>Релокаторы и релок готовы</b> — для схемы телепортации и обновления гарнизона.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt" data-i18n-html="ck1"><b>Глушитель разведки включён</b> — абсолютно все игроки, стоя за лентой до начала боя.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt" data-i18n-html="ck2"><b>Галочки на отрядах проставлены</b> — по своей группе: Гр.1 → 2 и 3; Гр.2 → 1 и 2; Гр.3 → 1-й дома с галочками на воротах.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt" data-i18n-html="ck3"><b>Знаю свою группу и задачу</b> — сбитие таймеров / контроль зданий / бочки.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt" data-i18n-html="ck4"><b>Чат рейда открыт</b> — читаем внимательно с момента начала резервуара.</span></label>
+      <label><input type="checkbox"><span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></span><span class="txt" data-i18n-html="ck5"><b>Релокаторы и релок готовы</b> — для схемы телепортации и обновления гарнизона.</span></label>
       <div class="check-progress"><span id="cpText">Готовность 0 / 5</span><div class="cp-bar"><i id="cpBar"></i></div></div>
     </div>
   </section>
@@ -317,30 +321,30 @@
     <div class="sec-head">
       <span class="sec-num">09</span>
       <img class="sec-emblem" src="assets/icon-rules.png" alt="">
-      <h2>Общие правила</h2>
+      <h2 data-i18n="s9h">Общие правила</h2>
       <span class="rule"></span>
-      <span class="sec-tag">Всё только по плану</span>
+      <span class="sec-tag" data-i18n="s9tag">Всё только по плану</span>
     </div>
     <div class="rules">
       <div class="rule-card">
-        <h5><i></i>Делаем</h5>
+        <h5><i></i><span data-i18n="doH">Делаем</span></h5>
         <ul>
-          <li><b>Группы 2 и 3 держат свои точки</b> — бочки и точки захвата не покидаем.</li>
-          <li><b>Сбитие — только группа 1</b>, строго по часовой стрелке.</li>
-          <li><b>Читаем чат рейда</b> — он открывается в момент начала резервуара.</li>
-          <li><b>Защищающий обновляет гарнизон релоком</b>, если в нём меньше 50%.</li>
-          <li><b>Захват точки — 2 мин 40 сек</b>: за 60 сек до конца вражеского захвата сильный с помощником летят сбивать таймер.</li>
-          <li><b>Телепортируемся по таймеру</b> — бесплатно / 1 релокатор / бесплатно.</li>
+          <li data-i18n-html="rl1"><b>Группы 2 и 3 держат свои точки</b> — бочки и точки захвата не покидаем.</li>
+          <li data-i18n-html="rl2"><b>Сбитие — только группа 1</b>, строго по часовой стрелке.</li>
+          <li data-i18n-html="rl3"><b>Читаем чат рейда</b> — он открывается в момент начала резервуара.</li>
+          <li data-i18n-html="rl4"><b>Защищающий обновляет гарнизон релоком</b>, если в нём меньше 50%.</li>
+          <li data-i18n-html="rl5"><b>Захват точки — 2 мин 40 сек</b>: за 60 сек до конца вражеского захвата сильный с помощником летят сбивать таймер.</li>
+          <li data-i18n-html="rl6"><b>Телепортируемся по таймеру</b> — бесплатно / 1 релокатор / бесплатно.</li>
         </ul>
       </div>
       <div class="rule-card red">
-        <h5><i></i>Не делаем</h5>
+        <h5><i></i><span data-i18n="dontH">Не делаем</span></h5>
         <ul>
-          <li><b>Никуда с точек не бежим</b> и никого не спасаем — всё только по плану.</li>
-          <li><b>Группы 2 и 3 не летят на помощь</b> — за помощь отвечает группа 1.</li>
-          <li><b>Группа 3 не ставит 1-й отряд на бочки</b> — собьётся сбор с нескольких точек.</li>
-          <li><b>Не заходим без глушителя разведки</b> — ни один игрок.</li>
-          <li><b>Не тратим алмазы на телепорты</b> — есть бесконечная схема с релокаторами.</li>
+          <li data-i18n-html="rn1"><b>Никуда с точек не бежим</b> и никого не спасаем — всё только по плану.</li>
+          <li data-i18n-html="rn2"><b>Группы 2 и 3 не летят на помощь</b> — за помощь отвечает группа 1.</li>
+          <li data-i18n-html="rn3"><b>Группа 3 не ставит 1-й отряд на бочки</b> — собьётся сбор с нескольких точек.</li>
+          <li data-i18n-html="rn4"><b>Не заходим без глушителя разведки</b> — ни один игрок.</li>
+          <li data-i18n-html="rn5"><b>Не тратим алмазы на телепорты</b> — есть бесконечная схема с релокаторами.</li>
         </ul>
       </div>
     </div>
@@ -350,8 +354,8 @@
 
 <footer>
   <div class="wrap ft-in">
-    <p>Резервуар · Tiles Survive · гайд по событию</p>
-    <p>Вода побеждает камень</p>
+    <p data-i18n="ft1">Резервуар · Tiles Survive · гайд по событию</p>
+    <p data-i18n="ft2">Вода побеждает камень</p>
   </div>
 </footer>
 
@@ -359,18 +363,18 @@
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="false">
   <div class="grab"></div>
-  <button class="close" id="sheetClose" aria-label="Закрыть">✕</button>
+  <button class="close" id="sheetClose" aria-label="Закрыть" data-i18n-aria="shClose">✕</button>
   <div id="sheetBody"></div>
 </div>
 
 
 <!-- плавающая навигация -->
 <nav class="dock">
-  <a href="#map">Карта</a>
-  <a href="#roster">Состав</a>
-  <a href="#assign">Точки</a>
-  <a href="#reserve">Резерв</a>
-  <a href="#rules">Правила</a>
+  <a href="#map" data-i18n="dkMap">Карта</a>
+  <a href="#roster" data-i18n="dkRoster">Состав</a>
+  <a href="#assign" data-i18n="dkAssign">Точки</a>
+  <a href="#reserve" data-i18n="dkRes">Резерв</a>
+  <a href="#rules" data-i18n="dkRules">Правила</a>
 </nav>
 
 <script src="app.js" defer></script>
