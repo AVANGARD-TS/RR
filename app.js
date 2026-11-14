@@ -11,7 +11,28 @@ var ICONS = {
 var G = {1:'#e05c2a',2:'#4a90c2',3:'#3aa17e'};
 var ENEMY='#d94f30';
 
-/* ============ ЯЗЫКИ: RU по умолчанию / EN ============ */
+var COPY_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+var CHECK_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
+
+function fallbackCopy(text){
+  var ta=document.createElement('textarea');
+  ta.value=text;ta.style.position='fixed';ta.style.top='-1000px';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy')}catch(e){}
+  document.body.removeChild(ta);
+}
+function copyText(text,btn){
+  function done(){
+    btn.classList.add('copied');
+    btn.innerHTML=CHECK_ICON;
+    setTimeout(function(){btn.classList.remove('copied');btn.innerHTML=COPY_ICON},1500);
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(function(){fallbackCopy(text);done()});
+  }else{fallbackCopy(text);done()}
+}
+
+/* ============ ЯЗЫКИ ============ */
 var LANG='ru';
 try{LANG=localStorage.getItem('ts-lang')||'ru'}catch(e){}
 var __I18N={
@@ -19,7 +40,7 @@ ru:{
   docTitle:'Резервуар',docDesc:'Резервуар в Tiles Survive',
   h1:'Гайд по рейду на Резервуар · Tiles Survive',kicker:'Tiles Survive · гайд по рейду',heroTitle:'Резервуар',
   r1t:'Группа 1 · Ударная',r1s:'сбивает таймеры захвата',r2t:'Группа 2 · Защита',r2s:'держит здания',r3t:'Группа 3 · Бочки',r3s:'качает бочки',
-  ppl8:'8 чел',ppl14:'14 чел',
+  ppl6:'6 чел',ppl10:'10 чел',ppl14:'14 чел',
   heroHint:'Тапай по меткам на карте — там всё расписано по объектам',
   s1h:'Карта боя',s1tag:'Тапай по меткам',mapToolbar:'Объекты и задачи',
   fAll:'Все',f1:'Ударная',f2:'Средние',f3:'Бочки',
@@ -27,17 +48,17 @@ ru:{
   mapPh:'Выбери метку на карте — здесь появится описание объекта и задачи групп.',
   mapNote:'<b>Синие метки с буквами</b> — наши здания: на них стоят группы А–Е, состав виден прямо на карте (приблизь или тапни метку). <b>Зелёные</b> — бочки, общая группа 3. <b>Красные</b> — точки противника.',
   s2h:'Группы и задачи',s2tag:'Тап — свернуть',
-  g1t:'Группа 1 · Ударная',g1s:'4 основы + 4 помощника',
+  g1t:'Группа 1 · Ударная',g1s:'2 соло + 2 пары',
   g1p1:'Назначение — <b>сбивать таймер точек захвата весь ивент</b>, двигаясь <b>по часовой стрелке</b>. Летаем по карте, помогаем остальным и друг другу выбивать сильных противников.',
-  g1p2:'Суммарная сила первых отрядов «основа + помощник» уравновешена: <b>самый слабый помощник идёт к самому сильному игроку</b> и т.д. Если основу жгут — помощник первым отрядом заходит к нему в гарнизон. Если помощь не нужна — помощник сбивает противников с бочек.',
-  g1p3:'<b>Захват точки — 2 мин 40 сек.</b> Когда до конца вражеского захвата остаётся <b>60 сек</b> — сильный с помощником делают ТП и летят сбивать таймер.',
+  g1p2:'Два сильнейших игрока летают <b>соло, без помощников</b>. Остальные собираются в пары по правилу: <b>самый слабый помощник идёт к самому сильному</b>. Если основу жгут — помощник первым отрядом заходит к нему в гарнизон. Если помощь не нужна — помощник сбивает противников с бочек.',
+  g1p3:'<b>Захват точки — 2 мин 40 сек.</b> Когда до конца вражеского захвата остаётся <b>60 сек</b> — сильный (соло или с помощником) делает ТП и летит сбивать таймер.',
   g2t:'Группа 2 · Защита',g2s:'Контроль зданий',
   g2p1:'Обеспечиваем <b>контроль захваченных зданий</b>. Приоритет — <b>вертолетная площадка</b> и <b>военный завод</b>: на каждом по <b>три сильных игрока</b>.',
   g2p2:'Распределяемся по 2–3 человека, в каждой связке — <b>один защищающий</b>: он следит за гарнизоном и обновляет его релоком, если в гарнизоне <b>меньше 50%</b> — отошёл в сторону, вода качается дальше, а в гарнизон идёт уже полный отряд. Остальные 1–2 человека сжигают противника или выигрывают время на переотправку.',
   g2p3:'Если жгут: 1 и 2 дома, <b>3-й в гарнизон</b>. Если не жгут: в гарнизон 1 отряд, галочки на 2 и 3.',
   g3t:'Группа 3 · Фарм',g3s:'Качаем бочки',
   g3p1:'До появления бочек — <b>смотрим на карту и летим туда, где больше всего боёв</b>: сжигаем противников, садимся в гарнизоны, помогаем захватывать здания. Задача — набить <b>180 000 личных очков</b>: сидя на бочках, такой возможности не будет.',
-  g3p2:'После появления бочек сидим <b>только на бочках</b>, отрядами 2–5.',
+  g3p2:'После появления бочек сидим <b>только на бочках</b>, отрядами 2–5. Группа выросла до <b>10 человек</b> — сюда же переведены Elena и Pika, чтобы закрыть больше бочек.',
   g3warn:'1-й отряд всегда дома и с галочками на воротах — иначе телепорт за ленту собьёт сбор сразу с нескольких точек. Если противник сильный: качаем 3–5 отрядами, 1 и 2 дома.',
   sq1:'1 отряд',sq2:'2 отряд',sq3:'3 отряд',sqHome:'1 дома',sq25:'2–5 отряды',
   s3h:'Центральный резервуар',s3tag:'Два сценария',
@@ -48,12 +69,12 @@ ru:{
   s4h:'Распределение игроков',s4tag:'Баланс по силам',
   searchPh:'Поиск по нику…',fg1:'Группа 1',thPlayer:'Игрок',thGroup:'Группа',
   tblFoot:'I, II, III — сила отрядов · ✓ — отряд с галкой: остаётся на воротах · синяя буква — группа по точкам (А–Е)',
-  s5h:'Назначение по точкам',s5tag:'Авто по силе · тапни двух — поменяются',
-  as2:'Группа 2 · кто где стоит',as2hint:'Координация по буквам: завод — группа А, вертолётка — Б, дальше В–Е по два человека. Тапни двух игроков — поменяются местами.',
-  as1:'Группа 1 · пары для сбития',as1hint:'Пары собраны по правилу: самый слабый помощник — к самому сильному. Летят по часовой стрелке, очередь точек решается по ходу боя.',
-  asNote:'<b>Правило 60 секунд.</b> Захват точки идёт <b>2 мин 40 сек</b>. Когда до конца вражеского таймера захвата остаётся <b>60 сек</b> — сильный с помощником <b>делают ТП и летят сбивать</b>. Так цепочка не останавливается, а схема телепортации (бесплатно → 1 релокатор) не сбивается.',
+  s5h:'Назначение по точкам',s5tag:'Авто по силе · копируй состав',
+  as2:'Группа 2 · кто где стоит',as2hint:'Координация по буквам: завод — группа А, вертолётка — Б, дальше В–Е по два человека. Иконка копирования — скопировать состав группы для чата.',
+  as1:'Группа 1 · соло и пары',as1hint:'Два сильнейших летают соло. Остальные — в парах по правилу «слабый помощник к сильной основе». Иконка копирования — скопировать для чата.',
+  asNote:'<b>Правило 60 секунд.</b> Захват точки идёт <b>2 мин 40 сек</b>. Когда до конца вражеского таймера захвата остаётся <b>60 сек</b> — сильный (соло или с помощником) <b>делает ТП и летит сбивать</b>. Так цепочка не останавливается, а схема телепортации (бесплатно → 1 релокатор) не сбивается.',
   s6h:'Резерв · замены',s6tag:'Каждый выходит 1 раз',
-  resHint:'Замена делается <b>один раз за ивент</b>. Каждому резервисту уже подобран <b>ближайший по силе I отряда</b> игрок — тапни «Заменить», и резервист встанет в таблицу, на точку и в пары вместо выбывшего.',
+  resHint:'Замена делается <b>один раз за ивент</b>. Каждому резервисту уже подобран игрок для замены — тапни «Заменить», и резервист встанет в таблицу, на точку и в пары вместо выбывшего.',
   s7h:'Схема телепортации',s7tag:'Тапай по шагам',
   tls1t:'Минута 0',tls1v:'Бесплатно',tls2t:'Через 1 мин',tls2v:'1 релокатор',tls3t:'Ещё через мин',tls3v:'Бесплатно',tls4t:'Далее',tls4v:'Повторяем',
   tl0:'<b>Переместились бесплатно</b> — начался таймер перезарядки телепорта. Дальше действуем по схеме и экономим релокаторы и алмазы.',
@@ -85,8 +106,10 @@ ru:{
   grp:'Группа',grpL:'группа',
   mkStand:'Стоят сейчас:',mkShared:'Общая группа:',mkSharedTail:'рассаживаются сами по свободным бочкам.',mkBarrels:'Бочки · группа 3',
   power:'Сила',showMap:'Показать на карте',pair:'Пара',pairMain:'основа',pairHelp:'помощник',
+  solo:'Соло',soloNote:'без помощника',
+  and:'и',copyBtn:'Скопировать',
   subFor:'вместо',subRs:'из резерва, за',subtag:'резерв',
-  resMatch:'Ближайший по силе I отряда:',resBtn:'Заменить:',resOut1:'Вышел вместо',resOut2:'уже в таблице, на точке и в парах.',resUndo:'Отменить замену',resNone:'Некого заменять.',
+  resMatch:'Ближайший по силе I отряда:',resMatchTarget:'Целевая замена:',resBtn:'Заменить:',resOut1:'Вышел вместо',resOut2:'уже в таблице, на точке и в парах.',resUndo:'Отменить замену',resNone:'Некого заменять.',
   roles:{'Основа':'Основа','Помощник':'Помощник','Средние':'Средние','Бочки':'Бочки'},
   blds:['Военный завод','Вертолетная площадка','Комплекс разработки','Солнечная электростанция','Водоочистительный центр · верх','Водоочистительный центр · низ'],
   marks:null
@@ -95,7 +118,7 @@ en:{
   docTitle:'Reservoir',docDesc:'Reservoir Raid guide — Tiles Survive',
   h1:'Reservoir Raid guide · Tiles Survive',kicker:'Tiles Survive · raid guide',heroTitle:'Reservoir',
   r1t:'Group 1 · Strike',r1s:'breaks capture timers',r2t:'Group 2 · Defense',r2s:'holds the buildings',r3t:'Group 3 · Barrels',r3s:'farms the barrels',
-  ppl8:'8 players',ppl14:'14 players',
+  ppl6:'6 players',ppl10:'10 players',ppl14:'14 players',
   heroHint:'Tap the markers on the map — every object is explained there',
   s1h:'Battle Map',s1tag:'Tap the markers',mapToolbar:'Objects & tasks',
   fAll:'All',f1:'Strike',f2:'Mid',f3:'Barrels',
@@ -103,17 +126,17 @@ en:{
   mapPh:'Pick a marker on the map — the object info and group tasks will appear here.',
   mapNote:'<b>Blue markers with letters</b> — our buildings: groups A–E hold them, squads are shown right on the map (zoom in or tap a marker). <b>Green</b> — barrels, shared group 3. <b>Red</b> — enemy points.',
   s2h:'Groups & tasks',s2tag:'Tap to collapse',
-  g1t:'Group 1 · Strike',g1s:'4 mains + 4 backups',
+  g1t:'Group 1 · Strike',g1s:'2 solo + 2 pairs',
   g1p1:'Our mission — <b>break capture timers all event long</b>, moving <b>clockwise</b>. We fly around the map, help the others and each other knock out strong enemies.',
-  g1p2:'Total squad-I power of each "main + backup" pair is balanced: <b>the weakest backup goes to the strongest player</b> and so on. If a main is being burned — the backup enters his garrison with the first squad. If no help is needed — the backup knocks enemies off the barrels.',
-  g1p3:'<b>Capturing a point takes 2 min 40 sec.</b> When <b>60 sec</b> remain on the enemy capture timer — the strong player and the backup teleport and fly to break it.',
+  g1p2:'The two strongest players fly <b>solo, without backups</b>. The rest form pairs by the rule: <b>the weakest backup goes to the strongest main</b>. If a main is being burned — the backup enters his garrison with the first squad. If no help is needed — the backup knocks enemies off the barrels.',
+  g1p3:'<b>Capturing a point takes 2 min 40 sec.</b> When <b>60 sec</b> remain on the enemy capture timer — the strong player (solo or paired) teleports and flies to break it.',
   g2t:'Group 2 · Defense',g2s:'Building control',
   g2p1:'We keep <b>control of captured buildings</b>. Priority — the <b>helipad</b> and the <b>munitions factory</b>: <b>three strong players</b> on each.',
   g2p2:'We split into teams of 2–3, each with <b>one defender</b>: he watches the garrison and refreshes it with a reloc; if the garrison is <b>below 50%</b> — step aside, water keeps flowing, and a full squad marches in. The other 1–2 players burn the enemy or buy time for redeployment.',
   g2p3:'If burned: squads 1 and 2 home, <b>3rd in garrison</b>. If not: squad 1 in garrison, checkmarks on 2 and 3.',
   g3t:'Group 3 · Farm',g3s:'Farming barrels',
   g3p1:'Before barrels appear — <b>watch the map and fly where the fighting is hottest</b>: burn enemies, sit in garrisons, help capture buildings. The goal is <b>180,000 solo points</b> — sitting on barrels you will not get there.',
-  g3p2:'After barrels appear we sit <b>on barrels only</b>, in squads 2–5.',
+  g3p2:'After barrels appear we sit <b>on barrels only</b>, in squads 2–5. The group is now <b>10 players</b> — Elena and Pika joined to cover more barrels.',
   g3warn:'Squad 1 always stays home with gate checkmarks — otherwise teleporting behind the line breaks farming on several points at once. If the enemy is strong: farm in squads 3–5, squads 1 and 2 home.',
   sq1:'Squad 1',sq2:'Squad 2',sq3:'Squad 3',sqHome:'1 at home',sq25:'Squads 2–5',
   s3h:'Central Reservoir',s3tag:'Two scenarios',
@@ -124,12 +147,12 @@ en:{
   s4h:'Player Assignments',s4tag:'Power balance',
   searchPh:'Search by nickname…',fg1:'Group 1',thPlayer:'Player',thGroup:'Group',
   tblFoot:'I, II, III — squad power · ✓ — checked squad: stays at the gates · blue letter — point group (A–E)',
-  s5h:'Point Assignments',s5tag:'Auto by power · tap two to swap',
-  as2:'Group 2 · positions',as2hint:'Coordination by letters: factory — group A, helipad — B, then C–E with two players each. Tap two players to swap them.',
-  as1:'Group 1 · strike pairs',as1hint:'Pairs follow the rule: weakest backup goes to the strongest main. They fly clockwise; the point order is decided during the battle.',
-  asNote:'<b>The 60-second rule.</b> Capturing a point takes <b>2 min 40 sec</b>. When <b>60 sec</b> remain on the enemy capture timer — the strong player and the backup <b>teleport and fly to break it</b>. The chain never stops and the teleport scheme (free → 1 relocator) stays intact.',
+  s5h:'Point Assignments',s5tag:'Auto by power · copy the roster',
+  as2:'Group 2 · positions',as2hint:'Coordination by letters: factory — group A, helipad — B, then C–E with two players each. The copy icon copies the group roster for the chat.',
+  as1:'Group 1 · solos and pairs',as1hint:'The two strongest fly solo. The rest form pairs by the rule "weak backup to strong main". The copy icon copies for the chat.',
+  asNote:'<b>The 60-second rule.</b> Capturing a point takes <b>2 min 40 sec</b>. When <b>60 sec</b> remain on the enemy capture timer — the strong player (solo or paired) <b>teleports and flies to break it</b>. The chain never stops and the teleport scheme (free → 1 relocator) stays intact.',
   s6h:'Reserve · Substitutions',s6tag:'Each subs in once',
-  resHint:'Substitution happens <b>once per event</b>. Each reserve player is already matched with the <b>closest squad-I power</b> player — tap "Substitute" and the reserve takes his place in the table, on the point and in the pairs.',
+  resHint:'Substitution happens <b>once per event</b>. Each reserve player is already matched with a specific player — tap "Substitute" and the reserve takes his place in the table, on the point and in the pairs.',
   s7h:'Teleport Scheme',s7tag:'Tap the steps',
   tls1t:'Minute 0',tls1v:'Free',tls2t:'After 1 min',tls2v:'1 relocator',tls3t:'1 more min',tls3v:'Free',tls4t:'Then',tls4v:'Repeat',
   tl0:'<b>Teleported for free</b> — the teleport cooldown has started. Keep following the scheme to save relocators and gems.',
@@ -161,8 +184,10 @@ en:{
   grp:'Group',grpL:'group',
   mkStand:'Stationed now:',mkShared:'Shared group:',mkSharedTail:'players seat themselves on free barrels.',mkBarrels:'Barrels · group 3',
   power:'Power',showMap:'Show on map',pair:'Pair',pairMain:'main',pairHelp:'backup',
+  solo:'Solo',soloNote:'no backup',
+  and:'and',copyBtn:'Copy',
   subFor:'replacing',subRs:'from reserve for',subtag:'reserve',
-  resMatch:'Closest by squad I power:',resBtn:'Substitute:',resOut1:'Subbed in for',resOut2:'already in the table, on the point and in pairs.',resUndo:'Undo substitution',resNone:'No one to replace.',
+  resMatch:'Closest by squad I power:',resMatchTarget:'Targeted substitution:',resBtn:'Substitute:',resOut1:'Subbed in for',resOut2:'already in the table, on the point and in pairs.',resUndo:'Undo substitution',resNone:'No one to replace.',
   roles:{'Основа':'Main','Помощник':'Backup','Средние':'Mid','Бочки':'Barrels'},
   blds:['Munitions Factory','Abandoned Helipad','Dev Compound','Solar Power Station','Water Treatment Center · top','Water Treatment Center · bottom'],
   marks:[
@@ -185,56 +210,70 @@ en:{
 }};
 window.__I18N=__I18N;
 function t(k){var L=__I18N[LANG]||__I18N.ru;return (L[k]!==undefined?L[k]:(__I18N.ru[k]!==undefined?__I18N.ru[k]:k))}
+
+/* ============ СОСТАВ ============ */
+/* ============ СОСТАВ ============ */
 var ROSTER=[
-  {n:'Dragon Hunter',g:1,role:'Основа',p:[112,79,69],gates:[2,3]},
-  {n:'Тебе водить',g:1,role:'Основа',p:[108,70,64],gates:[2,3]},
-  {n:'Elena',g:1,role:'Основа',p:[102,62,62],gates:[2,3]},
-  {n:'Повелитель',g:1,role:'Основа',p:[100,63,63],gates:[2,3]},
-  {n:'Golodranez',g:1,role:'Помощник',p:[95,87,80],gates:[]},
-  {n:'ПринцеssaДури',g:1,role:'Помощник',p:[93,60,55],gates:[]},
-  {n:'Chedrik',g:1,role:'Помощник',p:[92,65,55],gates:[]},
-  {n:'КАК ТО ТАК',g:1,role:'Помощник',p:[90,64,53],gates:[]},
-  {n:'luki_ink',g:2,role:'Средние',p:[89,64,54],gates:[]},
-  {n:'tihiy.omut',g:2,role:'Средние',p:[87,63,53],gates:[]},
-  {n:'Vantera',g:2,role:'Средние',p:[85,55,52],gates:[]},
-  {n:'Athena.',g:2,role:'Средние',p:[83,57,56],gates:[]},
-  {n:'Харон',g:2,role:'Средние',p:[81,65,94],gates:[],rs:'Орион'},
-  {n:'Laksa',g:2,role:'Средние',p:[82,47,44],gates:[]},
-  {n:"The Devil's Pet",g:2,role:'Средние',p:[87,55,52],gates:[],rs:'nEJIMEHb'},
-  {n:'Alkash228',g:2,role:'Средние',p:[81,47,44],gates:[]},
-  {n:'гусь.',g:2,role:'Средние',p:[80,53,46],gates:[]},
-  {n:'Pop tha Molly',g:2,role:'Средние',p:[80,59,51],gates:[]},
-  {n:'Олька',g:2,role:'Средние',p:[75,45,45],gates:[],rs:'Вий'},
-  {n:'Madmax',g:2,role:'Средние',p:[75,53,44],gates:[]},
-  {n:'EG Modo',g:2,role:'Средние',p:[75,54,50],gates:[]},
-  {n:'Koalaty',g:2,role:'Средние',p:[75,55,50],gates:[]},
-  {n:'Valkyrie',g:3,role:'Бочки',p:[67,47,43],gates:[1],rs:'Tatiana'},
-  {n:'ANGELina',g:3,role:'Бочки',p:[72,54,49],gates:[1]},
-  {n:'Milfa007',g:3,role:'Бочки',p:[65,48,44],gates:[1]},
-  {n:'Annkor',g:3,role:'Бочки',p:[73,46,42],gates:[1]},
-  {n:'Pilesha',g:3,role:'Бочки',p:[73,46,43],gates:[1]},
-  {n:'FanixRock',g:3,role:'Бочки',p:[64,41,38],gates:[1]},
-  {n:'OUNCE',g:3,role:'Бочки',p:[53,50,49],gates:[1]},
-  {n:'Serega',g:3,role:'Бочки',p:[67,47,null],gates:[1]}
+  /* ===== ГРУППА 1 · УДАРНАЯ (2 соло + 2 пары = 6) ===== */
+  {n:'Ms᭄ᴅᴇvɪʟᵝᵒˢˢ',g:1,role:'Основа',solo:true,p:[153,135,120],gates:[2,3]},
+  {n:'iamnotokay',g:1,role:'Основа',solo:true,p:[145,101,90],gates:[2,3]},
+  {n:'Strike',g:1,role:'Основа',p:[120,90,75],gates:[2,3]},
+  {n:'Тебе водить',g:1,role:'Основа',p:[112,70,66],gates:[2,3]},
+  {n:'Повелитель',g:1,role:'Помощник',p:[105,66,65],gates:[]},
+  {n:'Харон',g:1,role:'Помощник',p:[104,80,67],gates:[]},
+
+  /* ===== ГРУППА 2 · ЗАЩИТА (14) ===== */
+  {n:'Elena',g:2,role:'Средние',p:[103,63,63],gates:[]},
+  {n:'Pika',g:2,role:'Средние',p:[101,63,68],gates:[]},
+  {n:'Golodranez',g:2,role:'Средние',p:[100,90,82],gates:[]},
+  {n:'Пушистик',g:2,role:'Средние',p:[99,72,67],gates:[]},
+  {n:'ПринцеssaДури',g:2,role:'Средние',p:[96,66,57],gates:[]},
+  {n:'KaNo',g:2,role:'Средние',p:[94,60,55],gates:[]},
+  {n:'Chedrik',g:2,role:'Средние',p:[93,65,56],gates:[]},
+  {n:'КАК ТО ТАК',g:2,role:'Средние',p:[93,66,54],gates:[]},
+  {n:'Алиока',g:2,role:'Средние',p:[93,63,62],gates:[]},
+  {n:'maa.horoshaya',g:2,role:'Средние',p:[88,64,54],gates:[]},
+  {n:'Рop tha Мolly',g:2,role:'Средние',p:[88,58,52],gates:[]},
+  {n:'Vantera',g:2,role:'Средние',p:[86,55,53],gates:[]},
+  {n:'БеZумный♠',g:2,role:'Средние',p:[85,52,50],gates:[]},
+  {n:'Laksa',g:2,role:'Средние',p:[84,48,46],gates:[]},
+
+  /* ===== ГРУППА 3 · БОЧКИ (10 самых слабых) ===== */
+  {n:'Athena.',g:3,role:'Бочки',p:[84,59,55],gates:[1]},
+  {n:'гусь.',g:3,role:'Бочки',p:[82,54,46],gates:[1]},
+  {n:'おっちゃん♡',g:3,role:'Бочки',p:[80,50,48],gates:[1]},
+  {n:'Батон',g:3,role:'Бочки',p:[71,52,48],gates:[1]},
+  {n:'ros',g:3,role:'Бочки',p:[70,62,48],gates:[1]},
+  {n:'p0n4i',g:3,role:'Бочки',p:[69,44,41],gates:[1]},
+  {n:'ミルフィーユ',g:3,role:'Бочки',p:[68,46,40],gates:[1]},
+  {n:'Valkyrie',g:3,role:'Бочки',p:[68,47,44],gates:[1]},
+  {n:'♡Б̶у̶л̶к̶а̶♡',g:3,role:'Бочки',p:[64,47,44],gates:[1]},
+  {n:'OUNCE',g:3,role:'Бочки',p:[54,50,50],gates:[1]}
 ];
 var RES=[
-  {n:'WóòLF',p:[92,57,50]},
-  {n:'Ана 4а',p:[70,52,49]},
-  {n:'ros',p:[69,60,48]},
-  {n:'Коба',p:[69,46,43]},
-  {n:'DAVID.',p:[54,42,35]}
+  {n:'Ryouokay ¿?',p:[93,60,52],target:'Laksa'},
+  {n:'Madmax',p:[76,54,44]},
+  {n:'Pilesha',p:[74,46,46]},
+  {n:'Koalaty',p:[74,56,51]},
+  {n:'Ана 4а',p:[72,53,50]},
+  {n:'Коба',p:[71,47,44]},
+  {n:'FanixRock',p:[64,41,38]},
+  {n:'DAVID.',p:[56,42,35]}
 ];
 RES.forEach(function(r){r.used=false;r.sub=null});
-var G3=[],MID=[],G1A=[],G1H=[],PAIRS=[],STAGE_PAIRS=[],P={};
+
+var G3=[],MID=[],SOLOS=[],G1A=[],G1H=[],PAIRS=[],STAGE_PAIRS=[],P={};
+
 function gateCell(v,g){return v==null?'—':(v+(g?' <span class="gate" title="Отряд остаётся на воротах">✓</span>':''))}
 function roleT(role){var R=(window.__I18N&&__I18N[LANG].roles)||{};return R[role]||role}
+
 function renderRoster(){
   var tb=document.getElementById('rosterBody');if(!tb)return;tb.innerHTML='';
   ROSTER.forEach(function(r){
     var tr=document.createElement('tr');
     tr.className='g'+r.g+(r.replaced||r.rs?' sub':'');tr.dataset.g=r.g;
     tr.innerHTML='<td class="name">'+r.n+(r.replaced?'<span class="subnote">'+t('subFor')+' '+r.replaced+'</span>':'')+(r.rs?'<span class="subnote">'+t('subRs')+' '+r.rs+'</span>':'')+'</td>'
-      +'<td><span class="gtag">'+roleT(r.role)+'</span>'+(r.replaced||r.rs?'<span class="subtag">'+t('subtag')+'</span>':'')
+      +'<td><span class="gtag">'+roleT(r.role)+'</span>'+(r.solo?'<span class="subtag" style="background:var(--g3)">'+t('solo')+'</span>':'')+(r.replaced||r.rs?'<span class="subtag">'+t('subtag')+'</span>':'')
       +(r.g===2?'<span class="gplace" data-p="'+r.n+'"></span>':'')+'</td>'
       +'<td class="num">'+gateCell(r.p[0],r.gates.indexOf(1)>-1)+'</td>'
       +'<td class="num">'+gateCell(r.p[1],r.gates.indexOf(2)>-1)+'</td>'
@@ -242,10 +281,13 @@ function renderRoster(){
     tb.appendChild(tr);
   });
 }
+
 function rebuildSquads(){
   MID=ROSTER.filter(function(r){return r.g===2}).map(function(r){return [r.n,r.p[0]]});
-  G1A=ROSTER.filter(function(r){return r.g===1&&r.role==='Основа'}).map(function(r){return [r.n,r.p[0]]});
-  G1H=ROSTER.filter(function(r){return r.g===1&&r.role==='Помощник'}).map(function(r){return [r.n,r.p[0]]});
+  var g1=ROSTER.filter(function(r){return r.g===1});
+  SOLOS=g1.filter(function(r){return r.solo}).map(function(r){return [r.n,r.p[0]]});
+  G1A=g1.filter(function(r){return !r.solo&&r.role==='Основа'}).map(function(r){return [r.n,r.p[0]]});
+  G1H=g1.filter(function(r){return !r.solo&&r.role==='Помощник'}).map(function(r){return [r.n,r.p[0]]});
   G3=ROSTER.filter(function(r){return r.g===3}).map(function(r){return r.n});
   P={};MID.forEach(function(m){P[m[0]]=m[1]});
   var hasc=G1H.slice().sort(function(x,y){return x[1]-y[1]});
@@ -254,6 +296,8 @@ function rebuildSquads(){
 }
 rebuildSquads();
 renderRoster();
+
+/* ============ МЕТКИ КАРТЫ ============ */
 var MARKS = [
   {x:49.5,y:45.5,icon:'star',g:[1],t:'Центральный резервуар',
    d:'<b>Два сценария.</b> Мы сильнее — <b>держим центр</b>. Противник ровня или сильнее — сильнейший с помощником <b>только сбивает время захвата</b> и летит на следующие объекты.'},
@@ -286,6 +330,7 @@ var MARKS = [
   {x:52,y:86,icon:'barrels',g:[3],g3:1,dashed:1,up:1,t:'Бочки · группа 3',
    d:'<b>Группа 3 — общая на все бочки.</b> Бочки появляются по ходу ивента: рассаживаемся сами по свободным, отрядами 2–5. 1-й отряд всегда дома с галочками на воротах.'}
 ];
+
 var inner = document.getElementById('mapInner'),
     panel = document.getElementById('mapPanel'),
     sheet = document.getElementById('sheet'),
@@ -293,7 +338,6 @@ var inner = document.getElementById('mapInner'),
     scrim = document.getElementById('scrim'),
     isDesktop = function(){return window.matchMedia('(min-width:900px)').matches};
 
-/* данные назначений — нужны меткам карты, поэтому объявлены до создания меток */
 var BLDS=[
   {t:'Военный завод',n:3,icon:'cross',prio:true,l:'А'},
   {t:'Вертолетная площадка',n:3,icon:'heli',prio:true,l:'Б'},
@@ -302,11 +346,10 @@ var BLDS=[
   {t:'Водоочистительный центр · верх',n:2,icon:'drop',l:'Д'},
   {t:'Водоочистительный центр · низ',n:2,icon:'drop',l:'Е'}
 ];
-var asState=[],asSel=null;
+var asState=[];
 function autoAssign(){
   var srt=MID.slice().sort(function(a,b){return b[1]-a[1]}),i=0;
   asState=BLDS.map(function(b){var arr=srt.slice(i,i+b.n).map(function(m){return m[0]});i+=b.n;return arr});
-  asSel=null;
 }
 
 var mkEls=[],bldMk={};
@@ -338,12 +381,8 @@ MARKS.forEach(function(m,i){
     document.querySelectorAll('.mk.sel,.mk.open,.mk.hot').forEach(function(x){x.classList.remove('sel','open','hot')});
     b.classList.add('sel','open');
     var html=markHTML(m,i);
-    if(isDesktop()){
-      panel.innerHTML=html;
-    }else{
-      sheetBody.innerHTML=html;
-      sheet.classList.add('open');scrim.classList.add('on');
-    }
+    if(isDesktop()){panel.innerHTML=html;}
+    else{sheetBody.innerHTML=html;sheet.classList.add('open');scrim.classList.add('on');}
   });
   inner.appendChild(b);
   mkEls.push(b);
@@ -378,10 +417,7 @@ function closeSheet(){sheet.classList.remove('open');scrim.classList.remove('on'
 scrim.addEventListener('click',closeSheet);
 document.getElementById('sheetClose').addEventListener('click',closeSheet);
 
-/* ============ ПАРЫ И НАЗНАЧЕНИЕ ПО ТОЧКАМ ============ */
-/* пары считаются в rebuildSquads() */
-
-/* доска назначений группы 2 */
+/* ============ НАЗНАЧЕНИЕ ПО ТОЧКАМ ============ */
 function renderBlds(){
   var g=document.getElementById('asGrid');g.innerHTML='';
   var place={};
@@ -391,31 +427,29 @@ function renderBlds(){
         card=document.createElement('div');
     names.forEach(function(n){place[n]=b.l});
     card.className='bld'+(b.prio?' prio':'');
-    card.innerHTML='<div class="bld-head"><span class="bletter">'+b.l+'</span><span class="b-ico" style="--mk:#4a90c2">'+ICONS[b.icon]+'</span><b>'+bldT(bi)+'</b><span class="sum">'+t('power')+' '+sum+'</span></div>';
+    card.innerHTML='<div class="bld-head">'
+      +'<span class="bletter">'+b.l+'</span>'
+      +'<span class="b-ico" style="--mk:#4a90c2">'+ICONS[b.icon]+'</span>'
+      +'<b>'+bldT(bi)+'</b>'
+      +'<span class="sum">'+t('power')+' '+sum+'</span>'
+      +'<button class="copy-btn" type="button" title="'+t('copyBtn')+'" aria-label="'+t('copyBtn')+'">'+COPY_ICON+'</button>'
+      +'</div>';
     var slots=document.createElement('div');slots.className='slots';
-    names.forEach(function(n,pi){
-      var c=document.createElement('button');c.className='pl';
-      if(asSel&&asSel.b===bi&&asSel.p===pi)c.classList.add('sel');
+    names.forEach(function(n){
+      var c=document.createElement('span');c.className='pl';
       c.innerHTML=n+' <small>'+P[n]+'</small>';
-      c.addEventListener('click',function(){
-        if(!asSel){asSel={b:bi,p:pi}}
-        else{
-          var tmp=asState[asSel.b][asSel.p];
-          asState[asSel.b][asSel.p]=asState[bi][pi];
-          asState[bi][pi]=tmp;
-          asSel=null;
-        }
-        renderBlds();
-      });
       slots.appendChild(c);
     });
     card.appendChild(slots);
     var bm=document.createElement('button');bm.className='bmap';bm.textContent=t('showMap');
     bm.addEventListener('click',function(){focusMark(bi)});
     card.appendChild(bm);
+    var cb=card.querySelector('.copy-btn');
+    cb.addEventListener('click',function(){
+      copyText(t('grp')+' '+b.l+': '+names.join(', '),cb);
+    });
     g.appendChild(card);
   });
-  /* синхронизируем буквы групп в таблице распределения и подписи на карте */
   document.querySelectorAll('.gplace').forEach(function(el){
     el.textContent=place[el.dataset.p]||'';
   });
@@ -424,27 +458,61 @@ function renderBlds(){
 autoAssign();renderBlds();
 var asR=document.getElementById('asReset');if(asR)asR.addEventListener('click',function(){autoAssign();renderBlds()});
 
-/* пары группы 1 */
+/* пары + соло группы 1 */
 function renderPairs(){
   var pg=document.getElementById('pairGrid');pg.innerHTML='';
+
+  /* соло */
+  SOLOS.forEach(function(s,i){
+    var d=document.createElement('div');d.className='pair solo';
+    d.innerHTML='<div class="ph2">'
+      +'<span class="stage-n">S'+(i+1)+'</span>'
+      +'<b>'+t('solo')+' '+(i+1)+'</b>'
+      +'<span class="sum">'+t('power')+' '+s[1]+'</span>'
+      +'<button class="copy-btn" type="button" title="'+t('copyBtn')+'" aria-label="'+t('copyBtn')+'">'+COPY_ICON+'</button>'
+      +'</div>'
+      +'<p class="who"><b>'+s[0]+'</b> ('+t('soloNote')+', '+s[1]+')</p>';
+    var cb=d.querySelector('.copy-btn');
+    cb.addEventListener('click',function(){
+      copyText(t('solo')+' '+(i+1)+': '+s[0],cb);
+    });
+    pg.appendChild(d);
+  });
+
+  /* пары */
   STAGE_PAIRS.forEach(function(p,i){
     var d=document.createElement('div');d.className='pair';
-    d.innerHTML='<div class="ph2"><span class="stage-n">'+(i+1)+'</span><b>'+t('pair')+' '+(i+1)+'</b><span class="sum">'+t('power')+' '+p.sum+'</span></div>'
+    d.innerHTML='<div class="ph2">'
+      +'<span class="stage-n">'+(i+1)+'</span>'
+      +'<b>'+t('pair')+' '+(i+1)+'</b>'
+      +'<span class="sum">'+t('power')+' '+p.sum+'</span>'
+      +'<button class="copy-btn" type="button" title="'+t('copyBtn')+'" aria-label="'+t('copyBtn')+'">'+COPY_ICON+'</button>'
+      +'</div>'
       +'<p class="who"><b>'+p.a[0]+'</b> ('+t('pairMain')+', '+p.a[1]+') + <b>'+p.h[0]+'</b> ('+t('pairHelp')+', '+p.h[1]+')</p>';
+    var cb=d.querySelector('.copy-btn');
+    cb.addEventListener('click',function(){
+      copyText(t('pair')+' '+(i+1)+': '+p.a[0]+' '+t('and')+' '+p.h[0],cb);
+    });
     pg.appendChild(d);
   });
 }
 renderPairs();
 
-/* ============ РЕЗЕРВ: замены 1 раз ============ */
+/* ============ РЕЗЕРВ ============ */
 function placeOf(name){
   for(var i=0;i<BLDS.length;i++)if(asState[i]&&asState[i].indexOf(name)>-1)return BLDS[i].l;
   return null;
 }
 function findMatch(res){
+  if(res.target){
+    var tgt=null;
+    ROSTER.forEach(function(r){if(r.n===res.target&&!r.replaced&&!r.isRes)tgt=r});
+    if(tgt)return tgt;
+  }
   var best=null,bd=1e9;
   ROSTER.forEach(function(r){
     if(r.replaced||r.isRes)return;
+    if(r.n===res.n)return;
     var d=Math.abs(r.p[0]-res.p[0]);
     if(d<bd){bd=d;best=r}
   });
@@ -452,19 +520,19 @@ function findMatch(res){
 }
 function doSub(i){
   var res=RES[i];if(res.used)return;
-  var t=findMatch(res);if(!t)return;
-  asState.forEach(function(arr){var k=arr.indexOf(t.n);if(k>-1)arr[k]=res.n});
-  res.used=true;res.sub=t.n;
-  t.replaced=t.n;t.prevP=t.p;t.n=res.n;t.p=res.p.slice();t.isRes=true;
+  var tgt=findMatch(res);if(!tgt)return;
+  asState.forEach(function(arr){var k=arr.indexOf(tgt.n);if(k>-1)arr[k]=res.n});
+  res.used=true;res.sub=tgt.n;
+  tgt.replaced=tgt.n;tgt.prevP=tgt.p;tgt.n=res.n;tgt.p=res.p.slice();tgt.isRes=true;
   rebuildSquads();renderRoster();renderBlds();renderPairs();renderRes();
 }
 function undoSub(i){
   var res=RES[i];if(!res.used)return;
-  var t=null;
-  ROSTER.forEach(function(r){if(r.isRes&&r.n===res.n&&r.replaced===res.sub)t=r});
-  if(!t)return;
-  asState.forEach(function(arr){var k=arr.indexOf(res.n);if(k>-1)arr[k]=t.replaced});
-  t.n=t.replaced;t.p=t.prevP;t.replaced=null;t.prevP=null;t.isRes=false;
+  var tgt=null;
+  ROSTER.forEach(function(r){if(r.isRes&&r.n===res.n&&r.replaced===res.sub)tgt=r});
+  if(!tgt)return;
+  asState.forEach(function(arr){var k=arr.indexOf(res.n);if(k>-1)arr[k]=tgt.replaced});
+  tgt.n=tgt.replaced;tgt.p=tgt.prevP;tgt.replaced=null;tgt.prevP=null;tgt.isRes=false;
   res.used=false;res.sub=null;
   rebuildSquads();renderRoster();renderBlds();renderPairs();renderRes();
 }
@@ -481,7 +549,8 @@ function renderRes(){
       var m=findMatch(res);
       if(m){
         var pl=m.g===2?placeOf(m.n):null;
-        html+='<div class="res-match">'+t('resMatch')+' <b>'+m.n+'</b> ('+m.p[0]+') · '+roleT(m.role)+(pl?', '+t('grpL')+' '+pl:'')+'</div>'
+        var label=res.target?t('resMatchTarget'):t('resMatch');
+        html+='<div class="res-match">'+label+' <b>'+m.n+'</b> ('+m.p[0]+') · '+roleT(m.role)+(pl?', '+t('grpL')+' '+pl:'')+'</div>'
           +'<button class="res-btn">'+t('resBtn')+' '+m.n+' → '+res.n+'</button>';
       }else html+='<div class="res-match">'+t('resNone')+'</div>';
     }
@@ -504,7 +573,7 @@ document.getElementById('gfilters').addEventListener('click',function(e){
   });
 });
 
-/* ============ ДВИЖОК КАРТЫ: панорама + щипок-зум ============ */
+/* ============ ДВИЖОК КАРТЫ ============ */
 (function(){
   var view=document.getElementById('mapView'),
       W=1200,H=675,
@@ -588,7 +657,6 @@ document.getElementById('gfilters').addEventListener('click',function(e){
       if(moved){window.__panned=true;setTimeout(function(){window.__panned=false},60)}
       else if(pts.size===0&&downMk){downMk.click()}
       else if(pts.size===0){
-        /* двойной тап — зум */
         var now=Date.now(),rect=view.getBoundingClientRect();
         var x=e.clientX-rect.left,y=e.clientY-rect.top;
         if(now-lastTap<320&&Math.hypot(x-lastX,y-lastY)<40){
@@ -630,7 +698,7 @@ document.getElementById('gfilters').addEventListener('click',function(e){
   fit();
 })();
 
-/* ============ РАСПРЕДЕЛЕНИЕ: поиск + фильтр ============ */
+/* ============ ПОИСК + ФИЛЬТР ============ */
 (function(){
   var q=document.getElementById('tblSearch'),
       btns=[].slice.call(document.querySelectorAll('.tbl-tools .flt')),
@@ -653,7 +721,7 @@ document.getElementById('gfilters').addEventListener('click',function(e){
   });
 })();
 
-/* ============ ТЕЛЕПОРТЫ: степпер ============ */
+/* ============ ТЕЛЕПОРТЫ ============ */
 (function(){
   var steps=[].slice.call(document.querySelectorAll('#tlSteps .tl-step')),
       desc=document.getElementById('tlDesc');

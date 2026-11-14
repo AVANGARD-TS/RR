@@ -720,3 +720,22 @@ body{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
   .lang-sw{top:calc(8px + env(safe-area-inset-top));right:8px}
   .lang-sw button{font-size:11px;padding:4px 9px}
 }
+
+
+/* ============ КНОПКА КОПИРОВАНИЯ ============ */
+.copy-btn{
+  flex:none;width:30px;height:30px;border-radius:9px;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.7);border:1px solid var(--line);
+  color:var(--muted);cursor:pointer;
+  transition:all .15s ease;
+}
+.copy-btn:hover{color:var(--terra);border-color:var(--terra);background:#fff}
+.copy-btn:active{transform:scale(.9)}
+.copy-btn.copied{color:var(--g3);border-color:var(--g3);background:rgba(58,161,126,.12)}
+.copy-btn svg{width:15px;height:15px;display:block}
+
+/* ============ ПАРЫ: СОЛО ============ */
+.pair.solo{border-top-color:var(--g3)}
+.pair.solo .stage-n{background:var(--g3);box-shadow:0 0 0 2px var(--g3)}
+.pair.solo .sum{color:var(--g3);background:rgba(58,161,126,.12);border-color:rgba(58,161,126,.3)}
